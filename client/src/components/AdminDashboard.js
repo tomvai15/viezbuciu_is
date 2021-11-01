@@ -14,11 +14,27 @@ import Work from '@mui/icons-material/Work';
 import Analytics from '@mui/icons-material/Analytics';
 import TopMenu from './TopMenu';
 import Workers from './Workers';
+import { Route,useHistory} from 'react-router-dom';
+import EditWorker from './EditWorker';
+import AddWorkekr from './AddWorker';
 const drawerWidth = 200;
+const drawerStyle = {
+  width: drawerWidth,
+  flexShrink: 0,
+  '& .MuiDrawer-paper': {
+    width: drawerWidth,
+    boxSizing: 'border-box',
+  },
+}
 
 export default function AdminDashboard() {
 
-  const [state, setstate] = React.useState(1)
+  const history = useHistory();
+  
+
+  function handleClick() {
+    history.push("/home");
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -26,45 +42,50 @@ export default function AdminDashboard() {
         position="fixed"
         sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
       >
-          <TopMenu/>
+        <TopMenu/>
       </AppBar>
       <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
+        sx={drawerStyle}
         variant="permanent"
         anchor="left"
       >
-        <Toolbar />
-        <Divider />
-        <List>
-
-             <ListItem button key="Darbuotojai" onClick={()=>{setstate(0)}}>
-               <ListItemIcon>
-                 <Work/>
-               </ListItemIcon>
-               <ListItemText primary="Darbuotojai"/>
-             </ListItem>
-
-            <ListItem button key="Ataskaita" onClick={()=>{setstate(1)}}>
-              <ListItemIcon>
-                <Analytics/>
-              </ListItemIcon>
-              <ListItemText primary="Ataskaita" />
-            </ListItem>
-        </List>
+        <Toolbar >
+          Viežbučių_IS
+        </Toolbar >
+          <Divider />
+            <List>
+              <ListItem button key="Darbuotojai" onClick={()=>{history.push("/administracija/darbuotojai")}}>
+                <ListItemIcon>
+                  <Work/>
+                </ListItemIcon>
+                <ListItemText primary="Darbuotojai"/>
+              </ListItem>
+              <ListItem button key="Ataskaita" onClick={()=>{history.push("/administracija/ataskaita")}}>
+                <ListItemIcon>
+                  <Analytics/>
+                </ListItemIcon>
+                <ListItemText primary="Ataskaita" />
+              </ListItem>
+            </List>
       </Drawer>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
-      >
-        <Toolbar />
-        {state==0 ? <Workers/> : <Typography>TESTTT</Typography>}
+      <Box component="main"
+           sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
+          <Toolbar />
+          <Route
+            exact path="/administracija/"
+            render={props => (<Typography variant="h5" >Administratoriaus posistemė</Typography>)}/>
+          <Route
+            path="/administracija/darbuotojai"
+            render={props => (<Box><Typography variant="h5" >Viežbučio darbuotojai</Typography><br/><Workers/></Box>)}/>
+          <Route
+            path="/administracija/ataskaita"
+            render={props => (<div>ataskaita</div>)}/>
+             <Route
+            path="/administracija/add/"
+            render={props => (<AddWorkekr/>)}/>
+              <Route
+            path="/administracija/edit/:id"
+            render={props => (<EditWorker/>)}/>
       </Box>
     </Box>
   );

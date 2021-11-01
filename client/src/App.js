@@ -9,16 +9,40 @@ import {
 } from "react-router-dom";
 
 import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 import AdminDashboard from './components/AdminDashboard';
 
 function App() {
   return (
     <Router>
-     <Switch>
+     <Switch>      
           <Route exact path="/">
             <p>Home page</p>
+            <Link to="/login">
+                  Prisijungimas
+            </Link>
+            <br/>
+            <Link to="/signup" >
+                  Registracija
+            </Link>
+            <br/>
+            <Link to="/administracija">
+                    Administratoriaus posistemė
+            </Link>
+            <br/>
+            <Link to="/registratura" >
+                    Registratūros posistemė
+            </Link>
+            <br/>
+            <Link to="/klientas" >
+                    Kliento posistemė
+            </Link>
+            <br/>
+            <Link to="/virtuve" >
+                    Virtuvės posistemė
+            </Link>
           </Route>
-          <Route path="/rezervacija">
+          <Route path="/klientas">
             <Typography component="h1" variant="h5">
               Kliento posistemė
             </Typography>
@@ -38,6 +62,9 @@ function App() {
           </Route>
           <Route path="/login">
             <SignIn/>
+          </Route>
+          <Route path="/signup">
+            <SignUp/>
           </Route>
         </Switch>
     </Router>

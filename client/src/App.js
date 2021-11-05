@@ -11,7 +11,7 @@ import {
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import AdminDashboard from './components/AdminDashboard';
-
+import ReceptionDashboard from './components/reception/ReceptionDashboard';
 function App() {
   return (
     <Router>
@@ -57,7 +57,7 @@ function App() {
           </Route>
           <Route path="/registratura">
             <Typography component="h1" variant="h5">
-              Registratūros posistemė
+              <ReceptionDashboard/>
             </Typography>
           </Route>
           <Route path="/login">

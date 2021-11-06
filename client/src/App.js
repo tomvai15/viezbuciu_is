@@ -11,6 +11,7 @@ import {
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import AdminDashboard from './components/AdminDashboard';
+import ReservationsMain from './components/ClientSystem/ReservationsMain';
 
 function App() {
   return (
@@ -43,9 +44,7 @@ function App() {
             </Link>
           </Route>
           <Route path="/klientas">
-            <Typography component="h1" variant="h5">
-              Kliento posistemė
-            </Typography>
+            <ReservationsMain/>
           </Route>
           <Route path="/virtuve">
             <Typography component="h1" variant="h5">

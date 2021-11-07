@@ -16,7 +16,7 @@ import { Route,useHistory} from 'react-router-dom';
 import Reservations from './Reservations';
 import AddReservation from './AddReservation.js';
 import EditReservation from './EditReservation.js';
-
+import AddFood from './AddFood.js';
 const drawerWidth = 200;
 const drawerStyle = {
   width: drawerWidth,
@@ -54,7 +54,7 @@ export default function ReservationsMain() {
         </Toolbar >
           <Divider />
             <List>
-              <ListItem button key="Reyervacijos" onClick={()=>{history.push("/klientas")}}>
+              <ListItem button key="Rezervacijos" onClick={()=>{history.push("/klientas")}}>
                 <ListItemIcon>
                   <Bed/>
                 </ListItemIcon>
@@ -74,13 +74,10 @@ export default function ReservationsMain() {
             <Route
             path="/klientas/edit/:id"
             render={props => (<EditReservation/>)}/>
-             {/* 
-              <Route
-            path="/klientas/edit/:id"
-            render={props => (<EditWorker/>)}/>
+             
             <Route
             path="/klientas/addfood/:id"
-            render={props => (<AddFood/>)}/> */}
+            render={props => (<Box><Typography variant="h5" >Maisto užsakymas</Typography><br/><AddFood/></Box>)}/>
       </Box>
     </Box>
   );

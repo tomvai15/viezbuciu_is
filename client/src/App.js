@@ -11,8 +11,11 @@ import {
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import AdminDashboard from './components/AdminDashboard';
-import ReceptionDashboard from './components/reception/ReceptionDashboard';
+import ReceptionDashboard from './components/ReceptionSystem/ReceptionDashboard';
+import ReservationsMain from './components/ClientSystem/ReservationsMain';
+
 function App() {
+
   return (
     <Router>
      <Switch>      
@@ -43,9 +46,7 @@ function App() {
             </Link>
           </Route>
           <Route path="/klientas">
-            <Typography component="h1" variant="h5">
-              Kliento posistemė
-            </Typography>
+            <ReservationsMain/>
           </Route>
           <Route path="/virtuve">
             <Typography component="h1" variant="h5">

@@ -10,13 +10,13 @@ import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Work from '@mui/icons-material/Work';
-import Analytics from '@mui/icons-material/Analytics';
-import TopMenu from './TopMenu';
-import Workers from './Workers';
+import Bed from '@mui/icons-material/Bed';
+import TopMenu from '../TopMenu.js';
 import { Route,useHistory} from 'react-router-dom';
-import EditWorker from './EditWorker';
-import AddWorkekr from './AddWorker';
+import Reservations from './Reservations';
+import AddReservation from './AddReservation.js';
+import EditReservation from './EditReservation.js';
+
 const drawerWidth = 200;
 const drawerStyle = {
   width: drawerWidth,
@@ -27,7 +27,7 @@ const drawerStyle = {
   },
 }
 
-export default function AdminDashboard() {
+export default function ReservationsMain() {
 
   const history = useHistory();
   
@@ -54,17 +54,11 @@ export default function AdminDashboard() {
         </Toolbar >
           <Divider />
             <List>
-              <ListItem button key="Darbuotojai" onClick={()=>{history.push("/administracija/darbuotojai")}}>
+              <ListItem button key="Reyervacijos" onClick={()=>{history.push("/klientas")}}>
                 <ListItemIcon>
-                  <Work/>
+                  <Bed/>
                 </ListItemIcon>
-                <ListItemText primary="Darbuotojai"/>
-              </ListItem>
-              <ListItem button key="Ataskaita" onClick={()=>{history.push("/administracija/ataskaita")}}>
-                <ListItemIcon>
-                  <Analytics/>
-                </ListItemIcon>
-                <ListItemText primary="Ataskaita" />
+                <ListItemText primary="Rezervacijos"/>
               </ListItem>
             </List>
       </Drawer>
@@ -72,20 +66,21 @@ export default function AdminDashboard() {
            sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
           <Toolbar />
           <Route
-            exact path="/administracija/"
-            render={props => (<Typography variant="h5" >Administratoriaus posistemė</Typography>)}/>
-          <Route
-            path="/administracija/darbuotojai"
-            render={props => (<Box><Typography variant="h5" >Viežbučio darbuotojai</Typography><br/><Workers/></Box>)}/>
-          <Route
-            path="/administracija/ataskaita"
-            render={props => (<div>ataskaita</div>)}/>
-             <Route
-            path="/administracija/add/"
-            render={props => (<AddWorkekr/>)}/>
+            exact path="/klientas/"
+            render={props => (<Box><Typography variant="h5" >Rezervacijos</Typography><br/><Reservations/></Box>)}/>
+            <Route
+            path="/klientas/add/"
+            render={props => (<AddReservation/>)}/> 
+            <Route
+            path="/klientas/edit/:id"
+            render={props => (<EditReservation/>)}/>
+             {/* 
               <Route
-            path="/administracija/edit/:id"
+            path="/klientas/edit/:id"
             render={props => (<EditWorker/>)}/>
+            <Route
+            path="/klientas/addfood/:id"
+            render={props => (<AddFood/>)}/> */}
       </Box>
     </Box>
   );

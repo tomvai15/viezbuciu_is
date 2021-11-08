@@ -4,8 +4,8 @@ import React from "react";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -38,11 +38,48 @@ export default function ReservationInfo() {
       <Typography variant="h5">Rezervacijos informacija</Typography>
       <br />
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-        <Grid container spacing={4}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled
+              defaultValue="Jonas"
+              autoComplete="given-name"
+              name="firstName"
+              required
+              fullWidth
+              id="firstName"
+              label="Vardas"
+              autoFocus
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              disabled
+              required
+              fullWidth
+              id="lastName"
+              label="Pavardė"
+              name="lastName"
+              defaultValue="Petrulis"
+              autoComplete="family-name"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              disabled
+              defaultValue="jonas@pastas.lt"
+              required
+              fullWidth
+              id="email"
+              label="El. paštas"
+              name="email"
+              autoComplete="email"
+            />
+          </Grid>
           <Grid item xs={12} sm={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
-              disabled
+                disabled
                 disablePast
                 label="Pražios data"
                 openTo="day"
@@ -59,7 +96,7 @@ export default function ReservationInfo() {
           <Grid item xs={12} sm={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
-              disabled
+                disabled
                 disablePast
                 label="Pabaigos data"
                 openTo="day"
@@ -83,7 +120,7 @@ export default function ReservationInfo() {
                 onChange={handleTypeChange}
                 required
                 label="Tipas"
-                value={'Standartinis'}
+                value={"Standartinis"}
               >
                 {types.map((type) => (
                   <MenuItem key={type[0]} value={type[1]}>
@@ -95,8 +132,8 @@ export default function ReservationInfo() {
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-            disabled
-              sx={{ width: 260}}
+              disabled
+              sx={{ width: 260 }}
               type="number"
               name="bedAmount"
               id="bedAmount"
@@ -110,9 +147,19 @@ export default function ReservationInfo() {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-          <FormControlLabel disabled control={<Checkbox onClick={(newValue) => {
-                setbreakfast(newValue);
-              }} checked={true}/>} label="Pusryčiai" sx={{ margin: 1}}/>
+            <FormControlLabel
+              disabled
+              control={
+                <Checkbox
+                  onClick={(newValue) => {
+                    setbreakfast(newValue);
+                  }}
+                  checked={true}
+                />
+              }
+              label="Pusryčiai"
+              sx={{ margin: 1 }}
+            />
           </Grid>
         </Grid>
       </Box>

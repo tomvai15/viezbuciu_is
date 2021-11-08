@@ -112,8 +112,8 @@ export function TimelineWindow() {
     {
       id: 1,
       group: 1,
-      start_time: moment().startOf("day").add(1, "day").add(12, "hour"),
-      end_time: moment().endOf("day").add(4, "day").add(11, "hour"),
+      start_time: moment().startOf("day").subtract(10, "day").add(12, "hour"),
+      end_time: moment().endOf("day").subtract(2, "day").add(11, "hour"),
     },
     {
       id: 2,
@@ -125,7 +125,7 @@ export function TimelineWindow() {
     {
       id: 3,
       group: 1,
-      start_time: moment().startOf("day").add(5, "day").add(12, "hour"),
+      start_time: moment().startOf("day").subtract(1, "day").add(12, "hour"),
       end_time: moment().startOf("day").add(15, "day").add(11, "hour"),
       style: {
         backgroundColor: "red",

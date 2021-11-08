@@ -139,9 +139,25 @@ const AddRoom = () => {
             </Stack>
           </Grid>
         </Grid>
-        <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} onClick={()=>{history.push('/registratura/kambariai')}}>
-          Sukurti
-        </Button>
+        <Stack spacing={2} direction="row" paddingTop={"20px"}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              history.push("/registratura/kambariai");
+            }}
+          >
+            Atšaukti
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            onClick={() => {
+              history.push("/registratura/kambariai");
+            }}
+          >
+            Sukurti
+          </Button>
+        </Stack>
       </Box>
     </Box>
   );

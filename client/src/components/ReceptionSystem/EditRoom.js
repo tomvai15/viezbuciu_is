@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import { useHistory } from 'react-router';
+import { useHistory } from "react-router";
 const EditRoom = () => {
   const history = useHistory();
   const handleSubmit = (event) => {
@@ -26,7 +26,6 @@ const EditRoom = () => {
     // eslint-disable-next-line no-console
     console.log("liol");
   };
-
 
   return (
     <Box>
@@ -55,7 +54,7 @@ const EditRoom = () => {
                 name="roomNumber"
               />
               <TextField
-              value="3"
+                value="3"
                 required
                 fullWidth
                 id="numOfBeds"
@@ -121,7 +120,7 @@ const EditRoom = () => {
               <FormControl sx={{ m: 1 }} variant="standard">
                 <InputLabel htmlFor="roomPrice">Kambario kaina</InputLabel>
                 <Input
-                value="30"
+                  value="30"
                   id="roomPrice"
                   endAdornment={
                     <InputAdornment position="end">€</InputAdornment>
@@ -133,14 +132,17 @@ const EditRoom = () => {
                   Kambario išlaikymo kaina
                 </InputLabel>
                 <Input
-                value="5"
+                  value="5"
                   id="roomMaintainancePrice"
                   endAdornment={
                     <InputAdornment position="end">€</InputAdornment>
                   }
                 />
               </FormControl>
-              <FormControlLabel control={<Checkbox checked/>} label="Televizorius" />
+              <FormControlLabel
+                control={<Checkbox checked />}
+                label="Televizorius"
+              />
               <FormControlLabel control={<Checkbox />} label="Internetas" />
               <FormControlLabel control={<Checkbox />} label="Seifas" />
               <FormControlLabel control={<Checkbox checked />} label="Vonia" />
@@ -148,9 +150,27 @@ const EditRoom = () => {
             </Stack>
           </Grid>
         </Grid>
-        <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} onClick={()=>{history.push('/registratura/kambariai')}}>
-          Atnaujinti
-        </Button>
+        <Stack spacing={2} direction="row" paddingTop={'20px'}>
+          <Button
+            variant="outlined"
+           
+            onClick={() => {
+              history.push("/registratura/kambariai");
+            }}
+          >
+            Atšaukti
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+           
+            onClick={() => {
+              history.push("/registratura/kambariai");
+            }}
+          >
+            Atnaujinti
+          </Button>
+        </Stack>
       </Box>
     </Box>
   );

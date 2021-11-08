@@ -76,7 +76,7 @@ export default function AdminDashboard() {
             render={props => (<Typography variant="h5" >Administratoriaus posistemė</Typography>)}/>
           <Route
             path="/administracija/darbuotojai"
-            render={props => (<Box><Typography variant="h5" >Viežbučio darbuotojai</Typography><br/><Workers/></Box>)}/>
+            render={props => (<Box><Typography variant="h5" >Viešbučio darbuotojai</Typography><br/><Workers/></Box>)}/>
           <Route
             path="/administracija/ataskaita"
             render={props => (<div>ataskaita</div>)}/>

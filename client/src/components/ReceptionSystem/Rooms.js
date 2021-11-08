@@ -17,7 +17,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 function RemoveButton({ action }) {
   return (
     <Button
@@ -51,6 +52,7 @@ function EditButton({ action }) {
 }
 
 function createData(
+  free,
   number,
   floor,
   beds,
@@ -67,6 +69,7 @@ function createData(
   bar
 ) {
   return {
+    free,
     number,
     floor,
     beds,
@@ -86,6 +89,7 @@ function createData(
 
 const rows = [
   createData(
+    true,
     "101",
     "1",
     2,
@@ -102,6 +106,7 @@ const rows = [
     false
   ),
   createData(
+    false,
     "201",
     "2",
     2,
@@ -118,6 +123,7 @@ const rows = [
     false
   ),
   createData(
+    false,
     "420",
     "4",
     4,
@@ -134,6 +140,7 @@ const rows = [
     true
   ),
   createData(
+    true,
     "101",
     "1",
     3,
@@ -150,6 +157,7 @@ const rows = [
     false
   ),
   createData(
+    false,
     "102",
     "1",
     1,
@@ -207,6 +215,7 @@ export default function Rooms() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell>Laisvas</TableCell>
               <TableCell>Numeris</TableCell>
               <TableCell>Aukštas</TableCell>
               <TableCell>Lovų skaičius</TableCell>
@@ -229,33 +238,39 @@ export default function Rooms() {
                 key={row.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                {/* <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell> */}
+                <TableCell>
+                  {row.free ? (
+                    <CheckCircleIcon color="success" />
+                  ) : (
+                    <CancelIcon color="error" />
+                  )}
+                </TableCell>
                 <TableCell>{row.number}</TableCell>
                 <TableCell>{row.floor}</TableCell>
                 <TableCell>{row.beds}</TableCell>
-                <TableCell wrap="nowrap" > 
-                <Typography noWrap width={250}>
+                <TableCell wrap="nowrap">
+                  <Typography noWrap width={250}>
                     {row.description}
                   </Typography>
                 </TableCell>
                 <TableCell>{row.type}</TableCell>
-                <TableCell><Typography noWrap>{row.view} </Typography></TableCell>
+                <TableCell>
+                  <Typography noWrap>{row.view} </Typography>
+                </TableCell>
                 <TableCell>{row.size}</TableCell>
                 <TableCell>{row.price}</TableCell>
                 <TableCell>{row.maintainancePrice}</TableCell>
                 <TableCell>
-                  <Checkbox {..."HI"} disabled checked={row.tv} />
+                  <Checkbox disabled checked={row.tv} />
                 </TableCell>
                 <TableCell>
-                  <Checkbox {..."HI"} disabled checked={row.internet} />
+                  <Checkbox disabled checked={row.internet} />
                 </TableCell>
                 <TableCell>
-                  <Checkbox {..."HI"} disabled checked={row.safe} />
+                  <Checkbox disabled checked={row.safe} />
                 </TableCell>
                 <TableCell>
-                  <Checkbox {..."HI"} disabled checked={row.bath} />
+                  <Checkbox disabled checked={row.bath} />
                 </TableCell>
                 <TableCell>
                   <Checkbox {..."HI"} disabled checked={row.bar} />

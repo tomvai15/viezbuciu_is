@@ -72,7 +72,7 @@ const AddRoom = () => {
                 <Select
                   labelId="demo-simple-select-autowidth-label"
                   id="roomType"
-                  autoWidth
+                  // autoWidth
                   label="Kambario tipas"
                 >
                   <MenuItem value={"Ekonominis"}>Ekonominis</MenuItem>
@@ -88,7 +88,7 @@ const AddRoom = () => {
                 <Select
                   labelId="roomViewLabel"
                   id="roomView"
-                  autoWidth
+                  // autoWidth
                   label="Vaizdas"
                 >
                   <MenuItem value={"Į gatvę"}>Į gatvę</MenuItem>

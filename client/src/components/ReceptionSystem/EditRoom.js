@@ -75,7 +75,7 @@ const EditRoom = () => {
                 <Select
                   labelId="demo-simple-select-autowidth-label"
                   id="roomType"
-                  autoWidth
+                  // autoWidth
                   label="Kambario tipas"
                   value="Standartinis"
                 >
@@ -92,7 +92,7 @@ const EditRoom = () => {
                 <Select
                   labelId="roomViewLabel"
                   id="roomView"
-                  autoWidth
+                  // autoWidth
                   label="Vaizdas"
                   value="Į parką"
                 >
@@ -150,10 +150,9 @@ const EditRoom = () => {
             </Stack>
           </Grid>
         </Grid>
-        <Stack spacing={2} direction="row" paddingTop={'20px'}>
+        <Stack spacing={2} direction="row" paddingTop={"20px"}>
           <Button
             variant="outlined"
-           
             onClick={() => {
               history.push("/registratura/kambariai");
             }}
@@ -163,7 +162,6 @@ const EditRoom = () => {
           <Button
             type="submit"
             variant="contained"
-           
             onClick={() => {
               history.push("/registratura/kambariai");
             }}

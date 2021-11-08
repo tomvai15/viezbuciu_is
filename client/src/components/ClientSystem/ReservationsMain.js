@@ -50,7 +50,7 @@ export default function ReservationsMain() {
         anchor="left"
       >
         <Toolbar >
-          Viebučių_IS
+          Viešbučių IS
         </Toolbar >
           <Divider />
             <List>

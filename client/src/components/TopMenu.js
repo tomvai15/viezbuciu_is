@@ -9,7 +9,8 @@ import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-
+import { Button } from '@mui/material';
+import { useHistory } from 'react-router';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -52,6 +53,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function TopMenu() {
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -68,6 +70,7 @@ export default function TopMenu() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    history.push("/");
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -91,7 +94,7 @@ export default function TopMenu() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Atsijungti</MenuItem>
+      <MenuItem onClick={handleMenuClose}><Button variant="text">Atsijungti</Button></MenuItem>
     </Menu>
   );
 

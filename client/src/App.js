@@ -13,6 +13,7 @@ import SignUp from './components/SignUp';
 import AdminDashboard from './components/AdminDashboard';
 import ReceptionDashboard from './components/ReceptionSystem/ReceptionDashboard';
 import ReservationsMain from './components/ClientSystem/ReservationsMain';
+import KitchenDashboard from './components/KitchenSystem/KitchenDashboard';
 
 function App() {
 
@@ -50,7 +51,7 @@ function App() {
           </Route>
           <Route path="/virtuve">
             <Typography component="h1" variant="h5">
-              Virtuvės posistemė
+              <KitchenDashboard/>
             </Typography>
           </Route>
           <Route path="/administracija">

@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Button, Typography } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -36,7 +43,19 @@ function createData(
   breakfast,
   price
 ) {
-  return { id, room, name, surname, email, start, end, type, bedAmount, breakfast, price };
+  return {
+    id,
+    room,
+    name,
+    surname,
+    email,
+    start,
+    end,
+    type,
+    bedAmount,
+    breakfast,
+    price,
+  };
 }
 
 const rows = [
@@ -55,7 +74,7 @@ const rows = [
   ),
   createData(
     2,
-    '220',
+    "220",
     "Paulius",
     "Pauliukas",
     "paulius@pastas.lt",
@@ -68,7 +87,7 @@ const rows = [
   ),
   createData(
     3,
-    '-',
+    "-",
     "Petras",
     "Petraitis",
     "petras@pastas.lt",
@@ -81,7 +100,7 @@ const rows = [
   ),
   createData(
     4,
-    '-',
+    "-",
     "Kazimieras",
     "Kazlauskas",
     "kazys@pastas.lt",
@@ -116,17 +135,35 @@ export default function RezervationsWithRoom() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Ar tikrai norite pašalinti rezervaciją?"}
+          {"Pasirinkite kambarį"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Rezervacija bus pašalintas visam laikui
+            <FormControl sx={{ m: 1, minWidth: 200 }}>
+              <InputLabel id="roomType" required>
+                Kambario nr.
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="roomType"
+                //   autoWidth
+                label="Kambario tipas"
+              >
+                <MenuItem value={"201"}>201 - Į gatvę</MenuItem>
+                <MenuItem value={"202"}>202 - Į upę</MenuItem>
+                <MenuItem value={"203"}>203 - Į senamiestį</MenuItem>
+                <MenuItem value={"204"}>204 - Į parką</MenuItem>
+                <MenuItem value={"401"}>401 - Į parką</MenuItem>
+                <MenuItem value={"409"}>409 - Į parką</MenuItem>
+                <MenuItem value={"411"}>411 - Į parką</MenuItem>
+              </Select>
+            </FormControl>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Atšaukti</Button>
           <Button onClick={handleClose} autoFocus>
-            Pašalinti
+            Priskirti
           </Button>
         </DialogActions>
       </Dialog>
@@ -154,7 +191,17 @@ export default function RezervationsWithRoom() {
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell>{row.room == '-'? <Typography color="red" fontWeight="bold">—</Typography> : <Typography  color="green" fontWeight="bold">{row.room}</Typography>}</TableCell>
+                <TableCell>
+                  {row.room == "-" ? (
+                    <Typography color="red" fontWeight="bold">
+                      —
+                    </Typography>
+                  ) : (
+                    <Typography color="green" fontWeight="bold">
+                      {row.room}
+                    </Typography>
+                  )}
+                </TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.surname}</TableCell>
                 <TableCell>{row.email}</TableCell>
@@ -175,11 +222,11 @@ export default function RezervationsWithRoom() {
                 )}
 
                 <TableCell>
-                  <SetRoomButton
-                    action={() => {
-                      history.push("/registratura/rezervacija/edit/69");
-                    }}
-                  />
+                  {row.room != "-" ? (
+                    <div></div>
+                  ) : (
+                    <SetRoomButton action={handleClickOpen} />
+                  )}
                 </TableCell>
               </TableRow>
             ))}

@@ -95,6 +95,46 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
+                  id="email"
+                  label="Pridijungimo vardas"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Banko sąskaitos numeris"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Kortelės galiojimo pabaiga"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="CVV numeris"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
                   name="password"
                   label="Slaptažodis"
                   type="password"

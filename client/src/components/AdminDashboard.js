@@ -17,6 +17,8 @@ import Workers from './Workers';
 import { Route,useHistory} from 'react-router-dom';
 import EditWorker from './EditWorker';
 import AddWorkekr from './AddWorker';
+import Report from './AdministratorSystem/Report';
+import ReportChart from './AdministratorSystem/ReportChart'
 const drawerWidth = 200;
 const drawerStyle = {
   width: drawerWidth,
@@ -54,7 +56,7 @@ export default function AdminDashboard() {
         </Toolbar >
           <Divider />
             <List>
-              <ListItem button key="Darbuotojai" onClick={()=>{history.push("/administracija/darbuotojai")}}>
+              <ListItem button key="Darbuotojai" onClick={()=>{history.push("/administracija/")}}>
                 <ListItemIcon>
                   <Work/>
                 </ListItemIcon>
@@ -73,13 +75,10 @@ export default function AdminDashboard() {
           <Toolbar />
           <Route
             exact path="/administracija/"
-            render={props => (<Typography variant="h5" >Administratoriaus posistemė</Typography>)}/>
-          <Route
-            path="/administracija/darbuotojai"
             render={props => (<Box><Typography variant="h5" >Viešbučio darbuotojai</Typography><br/><Workers/></Box>)}/>
           <Route
             path="/administracija/ataskaita"
-            render={props => (<div>ataskaita</div>)}/>
+            render={props => (<Report/>)}/>
              <Route
             path="/administracija/add/"
             render={props => (<AddWorkekr/>)}/>

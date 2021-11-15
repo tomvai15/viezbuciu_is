@@ -11,6 +11,9 @@ import Paper from '@mui/material/Paper';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useHistory } from 'react-router';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -54,16 +57,16 @@ function EditButton({action})
 }
 
 
-function createData(name, surname, workplace, email, protein) {
-  return { name, surname, workplace, email, protein };
+function createData(name, surname, workplace, email, phone,birthdate,startdate,salary,personcode,workagr,id) {
+  return { name, surname, workplace, email, phone,birthdate,startdate,salary,personcode,workagr,id };
 }
 
 const rows = [
-  createData('Petras', 'Petrulis', 'Virtuvė', 'petras@gmail.com', 4.0),
-  createData('Vaclovas', 'Vaclovas', 'Registratūra', 'vaciukas69@gmail.com', 4.3),
-  createData('Vitalijus', 'Vitalijus', 'Virtuvė', 'vitalijus@gmail.com', 6.0),
-  createData('Kristina', 'Kristina', 'Registratūra', 'kristina@gmail.com', 4.3),
-  createData('Renata', 'Renata', 'Virtuvė', 'renata@gmail.com', 3.9),
+  createData('Petras', 'Petrulis', 'Virtuvė', 'petras@gmail.com','868198856',"1999-01-03","2021-01-03",1000,"50012324457","Terminuota","abcc123"),
+  createData('Vaclovas', 'Vaclovas', 'Registratūra', 'vaciukas69@gmail.com','868198856',"1999-01-03","2021-01-03",1000,"50012324457","Terminuota","abcc123"),
+  createData('Vitalijus', 'Vitalijus', 'Virtuvė', 'vitalijus@gmail.com', '868198856',"1999-01-03","2021-01-03",1000,"50012324457","Terminuota","abcc123"),
+  createData('Kristina', 'Kristina', 'Registratūra', 'kristina@gmail.com', '868198856',"1999-01-03","2021-01-03",1000,"50012324457","Terminuota","abcc123"),
+  createData('Renata', 'Renata', 'Virtuvė', 'renata@gmail.com', '868198856',"1999-01-03","2021-01-03",1000,"50012324457","Terminuota","abcc123"),
 ];
 
 export default function Workers() {
@@ -81,6 +84,20 @@ export default function Workers() {
 
   return (
     <Box>
+      <Typography variant="h7">
+          Darbuotojų filtras:   
+      </Typography>
+       <Select 
+          id="dv"
+    
+          value={0}
+          
+
+        >
+          <MenuItem value={0}>Visi darbuotojai</MenuItem>
+          <MenuItem value={1}>Virtuvės darbuotojai</MenuItem>
+          <MenuItem value={2}>Registratūros darbuotojai</MenuItem>
+        </Select>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -101,15 +118,20 @@ export default function Workers() {
         </DialogActions>
       </Dialog>
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ width: 1800 }} aria-label="simple table">
         <TableHead>
           <TableRow>
+           <TableCell>Darbuotojo ID</TableCell>
             <TableCell>Vardas</TableCell>
             <TableCell >Pavardė</TableCell>
             <TableCell >Darbo vieta</TableCell>
             <TableCell>El. Paštas</TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
+            <TableCell>Telefono numeris</TableCell>
+            <TableCell>Įsidarbinimo data</TableCell>
+            <TableCell>Gimimo data</TableCell>
+            <TableCell>Atlyginimas</TableCell>
+            <TableCell>Asmens kodas</TableCell>
+            <TableCell>Darbo sutartis</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -118,12 +140,19 @@ export default function Workers() {
               key={row.name}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
+                <TableCell>{row.id}</TableCell>
+              <TableCell  component="th" scope="row">
                 {row.name}
               </TableCell>
               <TableCell>{row.surname}</TableCell>
               <TableCell>{row.workplace}</TableCell>
               <TableCell>{row.email}</TableCell>
+              <TableCell>{row.phone}</TableCell>
+            <TableCell>{row.startdate}</TableCell>
+            <TableCell>{row.birthdate}</TableCell>
+            <TableCell>{row.salary}</TableCell>
+            <TableCell>{row.personcode}</TableCell>
+            <TableCell>{row.workagr}</TableCell>
               <TableCell><RemoveButton action={handleClickOpen} /></TableCell>
               <TableCell>
                 <EditButton action={()=>{history.push('/administracija/edit/66')}}/></TableCell>

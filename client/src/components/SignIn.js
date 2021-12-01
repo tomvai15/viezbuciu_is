@@ -12,30 +12,54 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley">
-        Nežinau ar šitą palikti
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
+import authService from '../services/auth.service';
+import { useHistory } from 'react-router';
+import { useState } from 'react';
 const theme = createTheme();
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const history = useHistory()
+  const [error,setError] =  useState("")
+  const handleSubmit = (event) => 
+  {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
     });
+
+    authService.login(data.get('email'), data.get('password')).then(
+    () => {
+      const user = authService.getCurrentUser()
+      switch(user.role) {
+        case 1:
+          history.push('/administracija/')
+          break;
+        case 2:
+          history.push('/klientas/')
+          break;
+        case 3:
+          history.push('/registratura/')
+          break;
+        case 4:
+          history.push('/virtuve/')
+          break;
+        default:
+          history.push('/')
+      }
+    },
+    error => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      setError("Neteisingas el. paštas arba slaptažodis")
+    }
+  );
+    
   };
 
   return (
@@ -56,7 +80,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Prisijungimas
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit}  sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -66,6 +90,7 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              type="email"
             />
             <TextField
               margin="normal"
@@ -77,7 +102,9 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-         
+          <Typography component="p" color="red">
+            {error}
+          </Typography>   
             <Button
               type="submit"
               fullWidth

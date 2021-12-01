@@ -47,8 +47,8 @@ const ReportTable = ({data}) => {
             name="Pajamos"
             type="basis"
             dataKey="income"
-            stroke="red"
-            color="red"
+            stroke={theme.palette.primary.main}
+            color={theme.palette.primary.main}
             dot={false}
           />
           <Line
@@ -56,7 +56,7 @@ const ReportTable = ({data}) => {
             isAnimationActive={false}
             type="basis"
             dataKey="costs"
-            stroke={theme.palette.primary.main}
+            stroke="red"
             dot={false}
           />
            <Line

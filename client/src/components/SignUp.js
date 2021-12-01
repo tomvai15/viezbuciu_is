@@ -13,31 +13,71 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import authService from '../services/auth.service';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const theme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+
+  const [date, setDate] = React.useState(new Date());
+  const [password, setPassword] = React.useState("");
+  const [error, SetError] = React.useState("");
+  const [response, setResponse] = React.useState({type:0,message:""});
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+  
+  const handleChange = (newValue) => {
+    setDate(newValue);
+  };
+
+  const handleSubmit = (event) => 
+  {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
+
+    if (data.get('password') != data.get('comfirmpassword'))
+    {
+      SetError("Slaptažodis nesutampa")
+      return;
+    }
+    SetError("")  
+    
+    const signUpData = {
+      name: data.get('firstName'),
+      surname: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
-    });
+      userName: data.get('username'),
+      bank: data.get('bank'),
+      cvv: data.get('cvv'),
+      date: date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate()
+    }
+
+    console.log(signUpData)
+
+    authService.register(signUpData).then(
+      () => {
+        setResponse({type:0,message:"Naudotojas užregistruotas"})
+        console.log("OK")
+      },
+      error => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage)
+        setResponse({type:1,message:resMessage})
+      }
+    );
+
+
   };
 
   return (
@@ -58,7 +98,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Registracija
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form"  onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -88,6 +128,7 @@ export default function SignUp() {
                   id="email"
                   label="El. paštas"
                   name="email"
+                  type="email"
                   autoComplete="email"
                 />
               </Grid>
@@ -95,40 +136,45 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="email"
-                  label="Pridijungimo vardas"
-                  name="email"
-                  autoComplete="email"
+                  id="username"
+                  label="Prisijungimo vardas"
+                  name="username"
+                  autoComplete="username"
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  id="email"
+                  id="bank"
                   label="Banko sąskaitos numeris"
-                  name="email"
-                  autoComplete="email"
+                  name="bank"
+                  autoComplete="bank"
                 />
+              </Grid>
+              <Grid item xs={6}>
+                 <LocalizationProvider dateAdapter={AdapterDateFns} required>
+                    <DatePicker
+                        id="date"
+                        name="date"
+                        label="Kortelės galiojimo pabaiga"
+                        openTo="day"
+                        views={["year", "month", "day"]}
+                        value={date}
+                        onChange={handleChange}
+                        required
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   required
                   fullWidth
-                  id="email"
-                  label="Kortelės galiojimo pabaiga"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
+                  id="cvv"
                   label="CVV numeris"
-                  name="email"
-                  autoComplete="email"
+                  name="cvv"
+                  autoComplete="cvv"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -138,12 +184,32 @@ export default function SignUp() {
                   name="password"
                   label="Slaptažodis"
                   type="password"
+                  value={password}
+                  onChange={handlePasswordChange}
                   id="password"
                   autoComplete="new-password"
+                  type="password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  error={error.length!=0}
+                  required
+                  type="password"
+                  fullWidth
+                  name="comfirmpassword"
+                  label="Patvirtinkite slaptažodį"
+                  id="comfirmpassword"
+                  autoComplete="new-password"
+                  helperText={error}
                 />
               </Grid>
 
             </Grid>
+
+            <Typography component="p" color={response.type==0 ? "green" : "red"}>
+            {response.message}
+            </Typography>
             <Button
               type="submit"
               fullWidth
@@ -159,6 +225,7 @@ export default function SignUp() {
                 </Link>
               </Grid>
             </Grid>
+        
           </Box>
         </Box>
       </Container>

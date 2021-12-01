@@ -10,7 +10,7 @@ import {
 
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
-import AdminDashboard from './components/AdminDashboard';
+import AdminDashboard from './components/AdministratorSystem/AdminDashboard';
 import ReceptionDashboard from './components/ReceptionSystem/ReceptionDashboard';
 import ReservationsMain from './components/ClientSystem/ReservationsMain';
 import KitchenDashboard from './components/KitchenSystem/KitchenDashboard';

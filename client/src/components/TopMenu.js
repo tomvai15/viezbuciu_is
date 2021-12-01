@@ -11,6 +11,7 @@ import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Button } from '@mui/material';
 import { useHistory } from 'react-router';
+import authService from '../services/auth.service';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -70,6 +71,7 @@ export default function TopMenu() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    authService.logout()
     history.push("/");
   };
 

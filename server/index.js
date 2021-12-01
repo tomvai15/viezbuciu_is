@@ -1,9 +1,34 @@
-const express = require('express');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
+const con = require("./config/db.config")
 
-const userRoute = require('./routes/admin')
-app.use('/admin',userRoute)
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
+const adminRouter = require("./routes/admin")
 
-app.listen(3001,()=>{
-    console.log("running  on port 3001");
+
+// connecting route to database
+app.use(function(req, res, next) {
+  req.con = con
+  next()
+})
+
+app.use(cors(corsOptions));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(function(req, res, next) {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
+  );
+  next();
+});
+
+app.use("/admin", adminRouter)
+
+app.listen(3001, function() {
+  console.log("server listening on port 3001")
 })

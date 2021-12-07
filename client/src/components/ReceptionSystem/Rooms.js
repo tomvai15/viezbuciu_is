@@ -19,6 +19,9 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import receptionService from "../../services/reception.services";
+import { useEffect } from "react";
+
 function RemoveButton({ action }) {
   return (
     <Button
@@ -87,104 +90,75 @@ function createData(
   };
 }
 
-const rows = [
-  createData(
-    true,
-    "101",
-    "1",
-    2,
-    "Tikrai neįdomus ir ilgas aprašymas kuris netelpa normaliai",
-    "Ekonominis",
-    "Į gatvę",
-    30.5,
-    46.99,
-    10.5,
-    false,
-    true,
-    false,
-    true,
-    false
-  ),
-  createData(
-    false,
-    "201",
-    "2",
-    2,
-    "Kažkoks labai įdomus, bet ilgas aprašymas kuris netelpa normaliai",
-    "Standartinis",
-    "Į upę",
-    37,
-    50,
-    20.5,
-    true,
-    false,
-    false,
-    true,
-    false
-  ),
-  createData(
-    false,
-    "420",
-    "4",
-    4,
-    "Nuostabus kambarys",
-    "Prabangus",
-    "Į senamiestį",
-    80.5,
-    123.21,
-    40,
-    true,
-    true,
-    true,
-    true,
-    true
-  ),
-  createData(
-    true,
-    "101",
-    "1",
-    3,
-    "Jaunavedžių svajonių kambarys",
-    "Stadartinis",
-    "Į parką",
-    40.25,
-    56.44,
-    10.1,
-    true,
-    true,
-    false,
-    true,
-    false
-  ),
-  createData(
-    false,
-    "102",
-    "1",
-    1,
-    "Vieną kartą atvykę, atvyksite ir dar kartą",
-    "Ekonominis",
-    "Į gatvę",
-    28,
-    20.02,
-    5,
-    false,
-    false,
-    false,
-    false,
-    false
-  ),
-];
-
 export default function Rooms() {
+  const [selectedId, setSelectedId] = React.useState(-1);
+  const [rooms, setRooms] = React.useState([]);
   const history = useHistory();
-
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  useEffect(() => {
+    receptionService.getRooms().then(
+      (res) => {
+        const rooms = res.data.data;
+        setRooms(
+          rooms.map((room) =>
+            createData(
+              true,
+              room.numeris,
+              room.aukstas,
+              room.lovu_skaicius,
+              room.aprasymas,
+              room.f_tipas,
+              room.f_vaizdas,
+              room.kambario_dydis,
+              room.kaina,
+              room.islaikymo_islaidos,
+              room.yra_televizorius,
+              room.yra_internetas,
+              room.yra_seifas,
+              room.yra_vonia,
+              room.yra_mini_baras
+            )
+          )
+        );
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+      }
+    );
+  }, []);
+
+  const handleClickOpen = (id) => {
+    console.log(id);
+    setSelectedId(id);
     setOpen(true);
   };
-
   const handleClose = () => {
+    setOpen(false);
+  };
+  const confirmDelete = () => {
+    receptionService.removeRoom(selectedId).then(
+      (res) => {
+        console.log("ok");
+        window.location.reload(false);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+      }
+    );
+    setSelectedId(-1);
     setOpen(false);
   };
 
@@ -206,7 +180,7 @@ export default function Rooms() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Atšaukti</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={confirmDelete} autoFocus>
             Pašalinti
           </Button>
         </DialogActions>
@@ -233,7 +207,7 @@ export default function Rooms() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rooms.map((row) => (
               <TableRow
                 key={row.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -276,12 +250,18 @@ export default function Rooms() {
                   <Checkbox {..."HI"} disabled checked={row.bar} />
                 </TableCell>
                 <TableCell>
-                  <RemoveButton action={handleClickOpen} />
+                  <RemoveButton
+                    action={() => {
+                      handleClickOpen(row.number);
+                    }}
+                  />
                 </TableCell>
                 <TableCell>
                   <EditButton
                     action={() => {
-                      history.push("/registratura/edit/66");
+                      {
+                        history.push("/registratura/edit/" + row.number);
+                      }
                     }}
                   />
                 </TableCell>
@@ -293,7 +273,7 @@ export default function Rooms() {
       <br />
       <AddButton
         action={() => {
-          history.push("/registratura/add");
+          history.push("/registratura/add/");
         }}
       />
     </Box>

@@ -41,8 +41,32 @@ isAdmin = (req, res, next) => {
     })
   };
 
+  isReception = (req, res, next) => {
+
+    User.getById(req.con, req.userId, function(err, rows)
+    {
+      if (err)
+      {
+        console.log(err);
+      }
+      const user = rows[0];
+      if (user.role==3)
+      {
+        next();
+      }
+      else
+      {
+        res.status(403).send({
+            message: "Require Receptionist Role!"
+          });
+          return;
+      }   
+    })
+  };
+
 const authJwt = {
     verifyToken: verifyToken,
-    isAdmin: isAdmin
+    isAdmin: isAdmin,
+    isReception: isReception
 };
 module.exports = authJwt;

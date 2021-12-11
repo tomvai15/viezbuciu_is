@@ -28,14 +28,14 @@ class ClientService {
     {
         return axios.post(API_URL + 'addFoodOrder',data, { headers: authHeader() })
     }
-    // getWorker(id) 
-    // {
-    //     return axios.get(API_URL + 'getworker/'+id, { headers: authHeader() })
-    // }
-    // updateWorker(data) 
-    // {
-    //     return axios.post(API_URL + 'updateworker', data, { headers: authHeader() })
-    // }
+    getReservation(id) 
+    {
+        return axios.get(API_URL + 'getreservation/'+id, { headers: authHeader() })
+    }
+    updateReservation(data) 
+    {
+        return axios.post(API_URL + 'updatereservation', data, { headers: authHeader() })
+    }
     // removeWorker(id) 
     // {
     //     return axios.post(API_URL + 'removeworker',{id:id}, { headers: authHeader() })

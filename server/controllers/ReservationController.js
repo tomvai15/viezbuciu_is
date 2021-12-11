@@ -21,17 +21,27 @@ module.exports = {
       res.send({ data: rows });
     });
   },
-  //This doesnt work
-//   getRoom: function (req, res) {
-//     Room.get(req.con, req.params.id, function (err, rows) {
-//       const user = rows[0];
-//       if (!user) {
-//         res.status(400).send({ message: "Room not found" });
-//         return;
-//       }
-//       res.send({ data: user });
-//     });
-//   },
+  getReservation: function (req, res) {
+    Reservation.get(req.con, req.params.id, function (err, rows) {
+      const user = rows[0];
+      console.log(user)
+      if (!user) {
+        res.status(400).send({ message: "Reservation not found" });
+        return;
+      }
+      res.send({ data: user });
+    });
+  },
+  updateReservation: function (req, res) {
+    Reservation.updateReservation(req.con, req.body, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "Failed" });
+      } else {
+        res.send({ message: "Room updated" });
+      }
+    });
+  },
 //   removeRoom: function (req, res) {
 //     Room.delete(req.con, req.body.id, function (err, rows) {
 //       if (err) {
@@ -53,14 +63,5 @@ module.exports = {
 //     });
 //   },
 
-//   updateRoom: function (req, res) {
-//     Room.updateRoom(req.con, req.body, function (err, rows) {
-//       if (err) {
-//         console.log(err);
-//         res.status(400).send({ message: "Failed" });
-//       } else {
-//         res.send({ message: "Room updated" });
-//       }
-//     });
-//   },
+
 };

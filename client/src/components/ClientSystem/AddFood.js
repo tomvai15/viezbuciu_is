@@ -114,7 +114,7 @@ export default function AddFood() {
       }
       else{
         const foodOrderData = {
-          date: format(date, 'yyyy-MM-dd'),
+          date: format(new Date(date), 'yyyy-MM-dd'),
           item: data.get('item'),
           amount: data.get('amount'),
           type: data.get('type'),
@@ -157,7 +157,7 @@ export default function AddFood() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.date.substring(0,10)}
+                  {format(new Date(row.date), 'yyyy-MM-dd')}
                 </TableCell>
                 <TableCell>{row.item}</TableCell>
                 <TableCell>{row.amount}</TableCell>

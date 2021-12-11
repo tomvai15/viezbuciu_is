@@ -14,7 +14,7 @@ router.get("/meniuitems",[authJwt.verifyToken,authJwt.isClient],foodOrderControl
 router.get("/foodordertypes",[authJwt.verifyToken,authJwt.isClient],foodOrderController.getTypes)
 router.get("/getfoodorderdates/:id",[authJwt.verifyToken,authJwt.isClient],foodOrderController.getOrderDates)
 router.post("/addFoodOrder",[authJwt.verifyToken,authJwt.isClient],foodOrderController.addFoodOrder) 
-// router.get("/getworker/:id",[authJwt.verifyToken,authJwt.isAdmin],workersController.getWorker) 
-// router.post("/updateworker",[authJwt.verifyToken,authJwt.isAdmin],workersController.updateWorker) 
+router.get("/getreservation/:id",[authJwt.verifyToken,authJwt.isClient],reservationController.getReservation) 
+router.post("/updatereservation",[authJwt.verifyToken,authJwt.isClient],reservationController.updateReservation) 
 // router.post("/removeworker",[authJwt.verifyToken,authJwt.isAdmin],workersController.removeWorker) 
 module.exports = router

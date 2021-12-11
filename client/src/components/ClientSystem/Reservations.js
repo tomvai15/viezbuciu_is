@@ -15,6 +15,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { format } from 'date-fns';
 import {
   RemoveButton,
   EditButton,
@@ -28,19 +29,6 @@ function createData(id, start, end, type, bedAmount, breakfast, price) {
   return { id, start, end, type, bedAmount, breakfast, price };
 }
 
-const rows = [
-  createData(
-    1,
-    "2021-04-04",
-    "2021-04-06",
-    "Ekonominis",
-    2,
-    "Užsakyta",
-    123.99
-  ),
-  createData(2, "2021-12-04", "2021-12-23", "Standartinis", 4, "", 123.99),
-  createData(3, "2022-04-10", "2022-04-13", "Prabangus", 2, "Užsakyta", 123.99),
-];
 
 export default function Rezervations() {
   const [reservations, setReservations] = React.useState([]);
@@ -49,7 +37,8 @@ export default function Rezervations() {
     console.log(user);
     clientServices.getReservations(user.id).then((res)=>{
       const reservations = res.data.data;
-      setReservations(reservations.map(reservation=> createData(reservation.id_Rezervacija, reservation.pradzia, reservation.pabaiga, reservation.kambario_tipas, reservation.lovu_skaicius, reservation.pusryciai, reservation.kaina)));
+      console.log(reservations)
+      setReservations(reservations.map(reservation=> createData(reservation.id_Rezervacija, reservation.pradzia, reservation.pabaiga, reservation.name, reservation.lovu_skaicius, reservation.pusryciai, reservation.kaina)));
     },
     error => {
       const resMessage =
@@ -117,13 +106,14 @@ export default function Rezervations() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.start}
+                  {format(new Date(row.start), 'yyyy-MM-dd')}
+
                 </TableCell>
-                <TableCell>{row.end}</TableCell>
+                <TableCell>{format(new Date(row.end), 'yyyy-MM-dd')}</TableCell>
                 <TableCell>{row.type}</TableCell>
                 <TableCell>{row.bedAmount}</TableCell>
                 <TableCell>{row.breakfast}</TableCell>
-                <TableCell>{row.price}</TableCell>
+                <TableCell>{row.price.toFixed(2)}</TableCell>
                 {Date.parse(row.start) > new Date() ? (
                   <TableCell>Rezervacija neprasidėjusi</TableCell>
                 ) : Date.parse(row.end) > new Date() ? (
@@ -139,7 +129,7 @@ export default function Rezervations() {
                   <TableCell>
                     <EditButton
                       action={() => {
-                        history.push("/klientas/edit/69");
+                        history.push("/klientas/editreservation/"+row.id);
                       }}
                     />
                   </TableCell>

@@ -72,7 +72,7 @@ export default function ReservationsMain() {
             path="/klientas/add/"
             render={props => (<AddReservation/>)}/> 
             <Route
-            path="/klientas/edit/:id"
+            path="/klientas/editreservation/:id"
             render={props => (<EditReservation/>)}/>
              
             <Route

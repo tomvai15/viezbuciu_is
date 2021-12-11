@@ -18,17 +18,13 @@ module.exports = {
         callback
       );
     },
-    //This doesnt work
     delete: function (con, id, callback) {
-      con.query(`DELETE FROM kambariai WHERE numeris='${id}'`, callback);
+      con.query(`DELETE FROM rezervacijos WHERE id_Rezervacija='${id}'`, callback);
     },
-  
+    
+    //This doesnt work
     createRoom: function (con, data, receptionist, callback) {
-      internet = data.internet ? 1 : 0;
-      tv = data.tv ? 1 : 0;
-      safe = data.safe ? 1 : 0;
-      bath = data.bath ? 1 : 0;
-      bar = data.bar ? 1 : 0;
+
   
       con.query(
         `INSERT INTO kambariai (aukstas, lovu_skaicius, aprasymas, yra_internetas, kambario_dydis, numeris, yra_televizorius, 

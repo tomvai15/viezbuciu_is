@@ -32,6 +32,7 @@ function createData(id, start, end, type, bedAmount, breakfast, price) {
 
 export default function Rezervations() {
   const [reservations, setReservations] = React.useState([]);
+  const [selectedId, setSelectedId] = React.useState(-1);
   useEffect(() => {
     const user = authService.getCurrentUser();
     console.log(user);
@@ -54,35 +55,53 @@ export default function Rezervations() {
 
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (id) => {
+    console.log(id)
+    setSelectedId(id);
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
+    setSelectedId(-1);
   };
+  const confirmDelete = () => {
+    clientServices.removeReservation(selectedId).then((res)=>{
+      console.log("ok");
+      window.location.reload(false);
+    },
+    error => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(resMessage);
+    });
+    setSelectedId(-1);
+    setOpen(false);
+  };
+  
 
   return (
     <Box>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={confirmDelete}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Ar tikrai norite pašalinti rezervaciją?"}
+          {"Ar tikrai norite pašalinti darbuotoją?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Rezervacija bus pašalintas visam laikui
+            Darbuotojas bus pašalintas visam laikui
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Atšaukti</Button>
-          <Button onClick={handleClose} autoFocus>
-            Pašalinti
-          </Button>
+          <Button onClick={confirmDelete} autoFocus>Pašalinti</Button>
         </DialogActions>
       </Dialog>
       <TableContainer component={Paper}>
@@ -124,7 +143,7 @@ export default function Rezervations() {
                 {Date.parse(row.start) > new Date() ? (
                   <div>
                   <TableCell>
-                    <RemoveButton action={handleClickOpen} />
+                    <RemoveButton action={()=>handleClickOpen(row.id)} />
                   </TableCell>
                   <TableCell>
                     <EditButton

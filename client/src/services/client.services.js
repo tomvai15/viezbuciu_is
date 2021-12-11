@@ -36,9 +36,9 @@ class ClientService {
     {
         return axios.post(API_URL + 'updatereservation', data, { headers: authHeader() })
     }
-    // removeWorker(id) 
-    // {
-    //     return axios.post(API_URL + 'removeworker',{id:id}, { headers: authHeader() })
-    // }
+    removeReservation(id) 
+    {
+        return axios.post(API_URL + 'removereservation',{id:id}, { headers: authHeader() })
+    }
 }
 export default new ClientService ()

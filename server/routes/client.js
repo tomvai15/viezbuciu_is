@@ -16,5 +16,5 @@ router.get("/getfoodorderdates/:id",[authJwt.verifyToken,authJwt.isClient],foodO
 router.post("/addFoodOrder",[authJwt.verifyToken,authJwt.isClient],foodOrderController.addFoodOrder) 
 router.get("/getreservation/:id",[authJwt.verifyToken,authJwt.isClient],reservationController.getReservation) 
 router.post("/updatereservation",[authJwt.verifyToken,authJwt.isClient],reservationController.updateReservation) 
-// router.post("/removeworker",[authJwt.verifyToken,authJwt.isAdmin],workersController.removeWorker) 
+router.post("/removereservation",[authJwt.verifyToken,authJwt.isClient],reservationController.removeReservation) 
 module.exports = router

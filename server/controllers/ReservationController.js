@@ -42,15 +42,15 @@ module.exports = {
       }
     });
   },
-//   removeRoom: function (req, res) {
-//     Room.delete(req.con, req.body.id, function (err, rows) {
-//       if (err) {
-//         console.log(err);
-//         res.status(400).send({ message: "FAILED" });
-//       }
-//       res.send({ message: "Room deleted" });
-//     });
-//   },
+  removeReservation: function (req, res) {
+    Reservation.delete(req.con, req.body.id, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "FAILED" });
+      }
+      res.send({ message: "Reservation deleted" });
+    });
+  },
 
 //   addRoom: function (req, res) {
 //     Room.createRoom(req.con, req.body, function (err, rows) {

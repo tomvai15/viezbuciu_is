@@ -1,3 +1,4 @@
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -9,6 +10,7 @@ var corsOptions = {
 };
 const adminRouter = require("./routes/admin")
 const receptionRouter = require("./routes/reception")
+const clientRouter = require("./routes/client")
 
 // connecting route to database
 app.use(function(req, res, next) {
@@ -29,6 +31,7 @@ app.use(function(req, res, next) {
 
 app.use("/admin", adminRouter)
 app.use("/reception", receptionRouter)
+app.use("/client", clientRouter)
 
 app.listen(3001, function() {
   console.log("server listening on port 3001")

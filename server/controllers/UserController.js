@@ -77,6 +77,7 @@ module.exports = {
         });
  
         res.status(200).send({
+          id: user.id_Naudotojas,
           email: user.email,
           accessToken: token,
           role: user.role

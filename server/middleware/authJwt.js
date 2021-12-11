@@ -63,10 +63,32 @@ isAdmin = (req, res, next) => {
       }   
     })
   };
+  isClient = (req, res, next) => {
 
+    User.getById(req.con, req.userId, function(err, rows)
+    {
+      if (err)
+      {
+        console.log(err);
+      }
+      const user = rows[0];
+      if (user.role==2)
+      {
+        next();
+      }
+      else
+      {
+        res.status(403).send({
+            message: "Require Client Role!"
+          });
+          return;
+      }   
+    })
+  };
 const authJwt = {
     verifyToken: verifyToken,
     isAdmin: isAdmin,
-    isReception: isReception
+    isReception: isReception,
+    isClient: isClient
 };
 module.exports = authJwt;

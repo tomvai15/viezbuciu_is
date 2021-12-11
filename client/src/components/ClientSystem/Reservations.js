@@ -9,7 +9,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useHistory } from "react-router";
-
+import { useEffect } from 'react';
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -21,6 +21,8 @@ import {
   AddButton,
   AddFoodButton,
 } from "../CommonFunctions/Buttons";
+import authService from "../../services/auth.service";
+import clientServices from "../../services/client.services";
 
 function createData(id, start, end, type, bedAmount, breakfast, price) {
   return { id, start, end, type, bedAmount, breakfast, price };
@@ -36,11 +38,29 @@ const rows = [
     "Užsakyta",
     123.99
   ),
-  createData(2, "2021-11-04", "2021-12-09", "Standartinis", 4, "", 123.99),
+  createData(2, "2021-12-04", "2021-12-23", "Standartinis", 4, "", 123.99),
   createData(3, "2022-04-10", "2022-04-13", "Prabangus", 2, "Užsakyta", 123.99),
 ];
 
 export default function Rezervations() {
+  const [reservations, setReservations] = React.useState([]);
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    console.log(user);
+    clientServices.getReservations(user.id).then((res)=>{
+      const reservations = res.data.data;
+      setReservations(reservations.map(reservation=> createData(reservation.id_Rezervacija, reservation.pradzia, reservation.pabaiga, reservation.kambario_tipas, reservation.lovu_skaicius, reservation.pusryciai, reservation.kaina)));
+    },
+    error => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(resMessage);
+    });
+  },[])
   const history = useHistory();
 
   const [open, setOpen] = React.useState(false);
@@ -91,7 +111,7 @@ export default function Rezervations() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {reservations.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -128,7 +148,7 @@ export default function Rezervations() {
                     <TableCell>
                     <AddFoodButton
                       action={() => {
-                        history.push("/klientas/addfood/69");
+                        history.push("/klientas/foodorders/"+row.id);
                       }}
                     />
                   </TableCell>

@@ -21,17 +21,9 @@ module.exports = {
     delete: function (con, id, callback) {
       con.query(`DELETE FROM rezervacijos WHERE id_Rezervacija='${id}'`, callback);
     },
-    
-    //This doesnt work
-    createRoom: function (con, data, receptionist, callback) {
-
-  
+    addReservation: function (con, data, callback) {
       con.query(
-        `INSERT INTO kambariai (aukstas, lovu_skaicius, aprasymas, yra_internetas, kambario_dydis, numeris, yra_televizorius, 
-          yra_seifas, yra_vonia, yra_mini_baras, kaina, islaikymo_islaidos, kambario_tipas, vaizdas, fk_Registratūros_darbuotojas) 
-          VALUES ('${data.floor}', '${data.numOfBeds}', '${data.description}', '${internet}' , '${data.roomSize}' , '${data.roomNumber}' , '${tv}'
-          , '${safe}' , '${bath}' , '${bar}' , '${data.roomPrice}' , '${data.roomMaintainancePrice}'
-          , '${data.type}' , '${data.view}', 18);`,
+        `INSERT INTO rezervacijos (pradzia, pabaiga, lovu_skaicius, pusryciai, kambario_tipas, fk_Klientas) VALUES ('${data.start}', '${data.end}', '${data.bedAmount}', '${data.breakfast}', '${data.type}', '${data.user}');`,
         callback
       );
     },

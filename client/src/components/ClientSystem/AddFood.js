@@ -23,6 +23,7 @@ import clientServices from "../../services/client.services";
 import { useEffect } from 'react';
 import { format } from 'date-fns';
 import authService from "../../services/auth.service";
+import AddReservation from "./AddReservation";
 function createData(date, item, amount, type, price) {
   return { date, item, amount, type, price };
 }
@@ -41,7 +42,7 @@ export default function AddFood() {
   const [type, setType] = React.useState(null);
   const [amount, setAmount] = React.useState(null);
   const [error, setError] =React.useState(null);
-
+  const [openAdd, setOpenAdd] = React.useState(false);
   const [foodOrders, setFoodOrders]=React.useState([]);
 
     useEffect(() => {
@@ -62,9 +63,11 @@ export default function AddFood() {
     useEffect(() => {
       clientServices.getFoodOrderDates(id).then((res)=>{
         const dates = res.data.data;
+        console.log(dates)
         setOrderMaxDate(dates[0].pabaiga);
       },
       error => {
+        setOpenAdd(true);
         const resMessage =
           (error.response &&
             error.response.data &&
@@ -137,6 +140,9 @@ export default function AddFood() {
   const handleChange = (event) => {
     setType(event.target.value);
   };
+  if (openAdd) {
+    return <AddReservation />;
+  }
   return (
     <Box>
       <TableContainer component={Paper}>

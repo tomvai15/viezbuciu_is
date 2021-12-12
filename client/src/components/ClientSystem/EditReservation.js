@@ -4,20 +4,22 @@ import React from "react";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useEffect } from 'react';
+import { useEffect } from "react";
 import authService from "../../services/auth.service";
 import clientServices from "../../services/client.services";
-import { useParams } from 'react-router-dom';
-import { format } from 'date-fns';
+import { useParams } from "react-router-dom";
+import { format } from "date-fns";
+import AddReservation from "./AddReservation";
+
 const types = [
-  [1, "Standartinis"],
-  [2, "Ekonominis"],
+  [1, "Ekonominis"],
+  [2, "Standartinis"],
   [3, "Prabangus"],
 ];
 
@@ -25,59 +27,25 @@ export default function EditReservation() {
   const { id } = useParams();
   const [start, setStart] = React.useState(null);
   const [end, setEnd] = React.useState(null);
-  const [type, setType] = React.useState(1);
+  const [type, setType] = React.useState(null);
   const [bedAmount, setBedAmount] = React.useState(null);
   const [breakfast, setbreakfast] = React.useState(false);
-  const [response, setResponse] = React.useState({type: 0,message:""})
+  const [response, setResponse] = React.useState({ type: 0, message: "" });
+  const [openAdd, setOpenAdd] = React.useState(false);
   useEffect(() => {
     const user = authService.getCurrentUser();
     console.log(user);
-    clientServices.getReservation(id).then((res)=>{
-      const reservation = res.data.data;
-      console.log(reservation)
-      setStart(reservation.pradzia);
-      setEnd(reservation.pabaiga);
-      setType(reservation.kambario_tipas);
-      setBedAmount(reservation.lovu_skaicius);
-      setbreakfast(reservation.pusryciai);
-    },
-    error => {
-      const resMessage =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      console.log(resMessage);
-    });
-  },[])
-
-  const handleTypeChange = (event) => {
-    setType(event.target.value);
-  };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log("pusryciai")
-    console.log(breakfast)
-    if( start== null || end == null || data.get('bedAmount')<=0 || data.get('type')==null ){
-      setResponse({type: 0,message:"Visi laukai yra privalomi. Lovų skaičius turi būti teigiamas skaičius"})
-    }
-    else{
-      console.log(new Date(start))
-      console.log(new Date(end))
-      const reservationData = {
-        start: format(new Date(start), 'yyyy-MM-dd'),
-        end: format(new Date(end), 'yyyy-MM-dd'),
-        bedAmount:  data.get('bedAmount'),
-        type: data.get('type'),
-        breakfast: data.get('breakfast') == 'on'? 1:0,
-        reservation:id,
-      }
-      clientServices.updateReservation(reservationData).then((res)=>{
-        setResponse({type: 0,message:"Rezervacijos informacija išsaugota"})
+    clientServices.getReservation(id).then(
+      (res) => {
+        const reservation = res.data.data;
+        setStart(reservation.pradzia);
+        setEnd(reservation.pabaiga);
+        setType(reservation.kambario_tipas);
+        setBedAmount(reservation.lovu_skaicius);
+        setbreakfast(reservation.pusryciai);
       },
-      error => {
+      (error) => {
+        setOpenAdd(true);
         const resMessage =
           (error.response &&
             error.response.data &&
@@ -85,11 +53,64 @@ export default function EditReservation() {
           error.message ||
           error.toString();
         console.log(resMessage);
-        setResponse({type: 1,message:resMessage })
-      });
-  }
-}
+      }
+    );
+  }, []);
 
+  const handleTypeChange = (event) => {
+    setType(event.target.value);
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log("pusryciai");
+    console.log(breakfast);
+    if (
+      start == null ||
+      end == null ||
+      data.get("bedAmount") <= 0 ||
+      type == null
+    ) {
+      setResponse({
+        type: 1,
+        message:
+          "Visi laukai yra privalomi. Lovų skaičius turi būti teigiamas skaičius",
+      });
+    } else {
+      console.log(new Date(start));
+      console.log(new Date(end));
+      const reservationData = {
+        start: format(new Date(start), "yyyy-MM-dd"),
+        end: format(new Date(end), "yyyy-MM-dd"),
+        bedAmount: data.get("bedAmount"),
+        type: type,
+        breakfast: data.get("breakfast") == "on" ? 1 : 0,
+        reservation: id,
+      };
+      clientServices.updateReservation(reservationData).then(
+        (res) => {
+          setResponse({
+            type: 0,
+            message: "Rezervacijos informacija išsaugota",
+          });
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          console.log(resMessage);
+          setResponse({ type: 1, message: resMessage });
+        }
+      );
+    }
+  };
+  console.log(type)
+  if (openAdd) {
+    return <AddReservation />;
+  }
   return (
     <Box>
       <Typography variant="h5">Rezervacijos redagavimas</Typography>
@@ -133,6 +154,7 @@ export default function EditReservation() {
             <FormControl sx={{ m: 1, width: 260, margin: 0 }}>
               <InputLabel id="types">Tipas</InputLabel>
               <Select
+                key={type ? "notLoadedYet" : "loaded"}
                 labelId="types"
                 id="type"
                 onChange={handleTypeChange}
@@ -151,8 +173,8 @@ export default function EditReservation() {
           </Grid>
           <Grid item xs={4} sm={12}>
             <TextField
-              sx={{ width: 260}}
-              key={bedAmount ? 'notLoadedYet' : 'loaded'}
+              sx={{ width: 260 }}
+              key={bedAmount ? "notLoadedYet" : "loaded"}
               type="number"
               name="bedAmount"
               id="bedAmount"
@@ -162,9 +184,9 @@ export default function EditReservation() {
                 const re = /^[0-9\b]+$/;
 
                 // if value is not blank, then test the regex
-            
-                if (e.target.value === '' || re.test(e.target.value)) {
-                   setBedAmount(e.target.value)
+
+                if (e.target.value === "" || re.test(e.target.value)) {
+                  setBedAmount(e.target.value);
                 }
               }}
               defaultValue={bedAmount}
@@ -172,16 +194,25 @@ export default function EditReservation() {
             />
           </Grid>
           <Grid item xs={4} sm={12}>
-          <FormControlLabel control={<Checkbox onClick={(e) => {
-                setbreakfast(!breakfast);
-              }} checked={breakfast}/>} label="Pusryčiai" name="breakfast" sx={{ margin: 1}}/>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onClick={(e) => {
+                    setbreakfast(!breakfast);
+                  }}
+                  checked={breakfast}
+                />
+              }
+              label="Pusryčiai"
+              name="breakfast"
+            />
           </Grid>
         </Grid>
-        <br/>
-        <Typography variant="p" color={response.type==0 ? "green" : "red"}>
-        {response.message}
-    </Typography>
-             <br/>
+        <br />
+        <Typography variant="p" color={response.type == 0 ? "green" : "red"}>
+          {response.message}
+        </Typography>
+        <br />
         <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
           Redaguoti
         </Button>

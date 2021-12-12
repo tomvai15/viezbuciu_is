@@ -92,11 +92,11 @@ export default function Rezervations() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Ar tikrai norite pašalinti darbuotoją?"}
+          {"Ar tikrai norite pašalinta rezervaciją?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Darbuotojas bus pašalintas visam laikui
+            Rezervacija bus pašalinti visam laikui
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -131,7 +131,7 @@ export default function Rezervations() {
                 <TableCell>{format(new Date(row.end), 'yyyy-MM-dd')}</TableCell>
                 <TableCell>{row.type}</TableCell>
                 <TableCell>{row.bedAmount}</TableCell>
-                <TableCell>{row.breakfast}</TableCell>
+                <TableCell>{row.breakfast? "Užsakyta": ""}</TableCell>
                 <TableCell>{row.price.toFixed(2)}</TableCell>
                 {Date.parse(row.start) > new Date() ? (
                   <TableCell>Rezervacija neprasidėjusi</TableCell>
@@ -172,7 +172,7 @@ export default function Rezervations() {
       <br />
       <AddButton
         action={() => {
-          history.push("/klientas/add");
+          history.push("/klientas/addreservation");
         }}
         name={"Kurti revervaciją"}
       />

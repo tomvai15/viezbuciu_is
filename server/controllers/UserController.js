@@ -78,7 +78,7 @@ module.exports = {
  
         res.status(200).send({
           id: user.id_Naudotojas,
-          email: user.email,
+          email: user.el_pastas,
           accessToken: token,
           role: user.role
         });

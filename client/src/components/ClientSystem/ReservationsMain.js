@@ -69,7 +69,7 @@ export default function ReservationsMain() {
             exact path="/klientas/"
             render={props => (<Box><Typography variant="h5" >Rezervacijos</Typography><br/><Reservations/></Box>)}/>
             <Route
-            path="/klientas/add/"
+            path="/klientas/addreservation/"
             render={props => (<AddReservation/>)}/> 
             <Route
             path="/klientas/editreservation/:id"

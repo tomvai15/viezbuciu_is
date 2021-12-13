@@ -64,7 +64,7 @@ const AddMenuItem = () => {
                Naujo meniu įrašo kūrimas
             </Typography>
             <br/>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <Grid  container spacing={2}>
                 <Grid item xs={12}>
                     <TextField

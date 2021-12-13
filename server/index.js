@@ -9,6 +9,7 @@ var corsOptions = {
 };
 const adminRouter = require("./routes/admin")
 const receptionRouter = require("./routes/reception")
+const kitchenRouter = require("./routes/kitchen")
 
 // connecting route to database
 app.use(function(req, res, next) {
@@ -29,6 +30,7 @@ app.use(function(req, res, next) {
 
 app.use("/admin", adminRouter)
 app.use("/reception", receptionRouter)
+app.use("/kitchen", kitchenRouter)
 
 app.listen(3001, function() {
   console.log("server listening on port 3001")

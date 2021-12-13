@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Button, Grid, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system';
 import InputLabel from '@mui/material/InputLabel';
@@ -7,26 +8,64 @@ import Select from '@mui/material/Select';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import React from 'react'
 import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import kitchenServices from '../../services/kitchen.services';
 
-const types = [
-    "Užkandis",
-    "Pagrindinis patiekalas",
-    "Gėrimas",
-];
-
-const sizes = [
-    "Didelė",
-    "Maža",
-];
+function createData(id, name, description, price, cost, isVegan, type, size) {
+    return {id, name, description, price, cost, isVegan, type, size};
+}
 
 const EditMenuItem = () => {
+    const [menuItem, setMenuItem] = React.useState(createData(-1, "", "", 1, 1, 1, 1, 1))
     const { id } = useParams();
+    const [response, setResponse] = React.useState({type: 0, message: ""})
 
-    const handleSubmit = (event) => {
+    useEffect(() => {
+        kitchenServices.getMenuItem(id).then((res)=>{
+            const menuItem = res.data.data;
+            setMenuItem(createData(
+                id,
+                menuItem.pavadinimas,
+                menuItem.aprasymas,
+                menuItem.kaina,
+                menuItem.savikaina,
+                menuItem.yra_veganiskas,
+                menuItem.tipas,
+                menuItem.porcijos_dydis
+                )
+            );
+        },
+        error => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          console.log(resMessage);
+        });
+      },[])
+
+      const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+    
+        let m = {...menuItem}
+
+        kitchenServices.updateMenuItem(m).then((res)=>{
+          setResponse({type: 0, message:"Meniu įrašo informacija išsaugota"})
+        },
+        error => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          console.log(resMessage);
+          setResponse({type: 1, message: resMessage })
+        });  
       };
       
     return (
@@ -44,7 +83,8 @@ const EditMenuItem = () => {
                     id="name"
                     label="Pavadinimas"
                     name="name"
-                    defaultValue="Pavadinimas"
+                    value={menuItem.name}
+                    onChange={(event)=>setMenuItem({...menuItem,name:event.target.value})}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -54,7 +94,8 @@ const EditMenuItem = () => {
                     id="description"
                     label="Aprašymas"
                     name="description"
-                    defaultValue="Aprašymas"
+                    value={menuItem.description}
+                    onChange={(event)=>setMenuItem({...menuItem,description:event.target.value})}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -68,7 +109,8 @@ const EditMenuItem = () => {
                     inputProps={{
                         step: "0.1"
                     }}
-                    defaultValue={9.99}
+                    value={menuItem.price}
+                    onChange={(event)=>setMenuItem({...menuItem,price:event.target.value})}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -82,7 +124,8 @@ const EditMenuItem = () => {
                     inputProps={{
                         step: "0.1"
                     }}
-                    defaultValue={9.99}
+                    value={menuItem.cost}
+                    onChange={(event)=>setMenuItem({...menuItem,cost:event.target.value})}
                     />
                 </Grid>
                 <Grid item xs={12} >
@@ -93,12 +136,12 @@ const EditMenuItem = () => {
                             id="type"
                             required
                             label="Tipas *"
+                            value={menuItem.type}
+                            onChange={(event)=>setMenuItem({...menuItem,type:event.target.value})}
                         >
-                            {types.map((type) => (
-                                <MenuItem value={type}>
-                                    {type}
-                                </MenuItem>
-                            ))}
+                            <MenuItem value={1}>Užkandis</MenuItem>
+                            <MenuItem value={2}>Pagrindinis patiekalas</MenuItem>
+                            <MenuItem value={3}>Gėrimas</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -110,18 +153,17 @@ const EditMenuItem = () => {
                             id="size"
                             label="Porcijos dydis *"
                             required
+                            value={menuItem.size}
+                            onChange={(event)=>setMenuItem({...menuItem,size:event.target.value})}
                         >
-                            {sizes.map((size) => (
-                                <MenuItem value={size}>
-                                    {size}
-                                </MenuItem>
-                            ))}
+                            <MenuItem value={1}>Didelė</MenuItem>
+                            <MenuItem value={2}>Maža</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                     <FormGroup>
-                        <FormControlLabel control={<Switch/>} label="Ar veganiškas" />
+                        <FormControlLabel control={<Switch checked={menuItem.isVegan == 1 ? true : false} onChange={(event)=>setMenuItem({...menuItem,isVegan:event.target.checked == true ? 1 : 0})}/>} label="Ar veganiškas" />
                     </FormGroup>
                 </Grid>
             </Grid>
@@ -130,9 +172,12 @@ const EditMenuItem = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2, }}
             >
-              Sukurti
+              Išsaugoti
             </Button>
           </Box>
+          <Typography variant="p" color={response.type==0 ? "green" : "red"}>
+            {response.message}
+        </Typography>
         </Box>
     )
 }

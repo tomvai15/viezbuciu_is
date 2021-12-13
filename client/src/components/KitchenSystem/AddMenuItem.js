@@ -7,20 +7,20 @@ import Select from '@mui/material/Select';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import React from 'react'
-
-const types = [
-    "Užkandis",
-    "Pagrindinis patiekalas",
-    "Gėrimas",
-];
-
-const sizes = [
-    "Didelė",
-    "Maža",
-];
+import React from 'react';
+import authService from '../../services/auth.service';
 
 const AddMenuItem = () => {
+    const user = authService.getCurrentUser()
+    console.log(user)
+    const [name, setName] = React.useState("")
+    const [description, setDescription] = React.useState("")
+    const [price, setPrice] = React.useState(1)
+    const [cost, setCost] = React.useState(1)
+    const [type, setType] = React.useState(1)
+    const [size, setSize] = React.useState(1)
+    const [isVegan, setIsVegan] = React.useState(1) 
+    const [response, setResponse] = React.useState({type: 0,message:""})
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -30,7 +30,7 @@ const AddMenuItem = () => {
     return (
         <Box>
             <Typography variant="h5">
-               Naujo meniu įrašo kūrimas 
+               Naujo meniu įrašo kūrimas
             </Typography>
             <br/>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -88,11 +88,9 @@ const AddMenuItem = () => {
                             required
                             label="Tipas *"
                         >
-                            {types.map((type) => (
-                                <MenuItem value={type}>
-                                    {type}
-                                </MenuItem>
-                            ))}
+                            <MenuItem value={1}>Užkandis</MenuItem>
+                            <MenuItem value={2}>Pagrindinis patiekalas</MenuItem>
+                            <MenuItem value={3}>Gėrimas</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -105,11 +103,8 @@ const AddMenuItem = () => {
                             label="Porcijos dydis *"
                             required
                         >
-                            {sizes.map((size) => (
-                                <MenuItem value={size}>
-                                    {size}
-                                </MenuItem>
-                            ))}
+                            <MenuItem value={1}>Didelė</MenuItem>
+                            <MenuItem value={2}>Maža</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>

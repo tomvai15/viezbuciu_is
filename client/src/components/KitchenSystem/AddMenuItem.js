@@ -12,8 +12,7 @@ import authService from '../../services/auth.service';
 import kitchenServices from '../../services/kitchen.services';
 
 const AddMenuItem = () => {
-    //const user = authService.getCurrentUser()
-    const user = 19
+    const user = authService.getCurrentUser().id
     const [type, setType] = React.useState(1)
     const [size, setSize] = React.useState(1)
     const [isVegan, setIsVegan] = React.useState(0) 

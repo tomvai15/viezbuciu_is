@@ -18,10 +18,12 @@ import React from "react";
 import { useHistory } from "react-router";
 import { useState } from "react";
 import receptionService from "../../services/reception.services";
+import authService from '../../services/auth.service';
+
 
 const AddRoom = () => {
   const history = useHistory();
-
+  
   const [type, setType] = useState(1);
   const [view, setView] = useState(1);
   const [tv, setTv] = useState(false);
@@ -79,6 +81,7 @@ const AddRoom = () => {
       safe: safe,
       bath: bath,
       bar: bar,
+      receptionist: authService.getCurrentUser()
     };
     console.log(roomData);
 

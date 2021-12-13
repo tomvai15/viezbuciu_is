@@ -18,6 +18,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import { useEffect } from "react";
+import kitchenServices from '../../services/kitchen.services';
+
 
 
 function RemoveButton({action})
@@ -48,32 +51,75 @@ function EditButton({action})
           <Button variant="contained"
                   color="primary" 
                   onClick={action}
-                  >Redaguoti</Button>
+                  >Redaguoti
+          </Button>
 
     )
 }
 
 
-function createData(name, description, price, cost, type, size, isVegan) {
-  return { name, description, price, cost, type, size, isVegan };
+function createData(id, name, description, price, cost, isVegan, type, size) {
+  return {id, name, description, price, cost, isVegan, type, size};
 }
-
-const rows = [
-  createData('Kepta Duona', 'Kepta duona su česnaku ir sūriu', 4.99, 1.99, 'Užkandis', 'Maža', 'Ne'),
-  createData('Kepsnys', 'Kiaulienos kepsnys su BBQ padažu', 9.99, 5.99, 'Pagrindinis Patiekalas', 'Didelė', 'Ne'),
-  createData('Cola', 'Gazuotas gėrimas', 2.99, 0.99, 'Gėrimas', 'Maža', 'Taip'),
-];
 
 export default function Workers() {
   const history = useHistory();
-
+  const [menuItems, setMenuItems] = React.useState([]);
+  const [selectedId, setSelectedId] = React.useState(-1);
   const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
+  const handleClickOpen = (id) => {
+    console.log(id)
+    setSelectedId(id);
     setOpen(true);
   };
-
   const handleClose = () => {
+    setOpen(false);
+  };
+  useEffect(() => {
+    kitchenServices.getMenu().then(
+      (res) => {
+        const menuItems = res.data.data;
+        setMenuItems(
+          menuItems.map((menuItem) =>
+            createData(
+              menuItem.id_Meniu_irasas,
+              menuItem.pavadinimas,
+              menuItem.aprasymas,
+              menuItem.kaina,
+              menuItem.savikaina,
+              menuItem.yra_veganiskas,
+              menuItem.m_tipas,
+              menuItem.p_tipas
+            )
+          )
+        );
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+      }
+    );
+  }, []);
+  const removeMenuItem = () => {
+    kitchenServices.removeMenuItem(selectedId).then((res)=>{
+      console.log("ok");
+      window.location.reload(false);
+    },
+    error => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(resMessage);
+    });
+    setSelectedId(-1);
     setOpen(false);
   };
 
@@ -95,7 +141,7 @@ export default function Workers() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Atšaukti</Button>
-          <Button onClick={handleClose} autoFocus>Pašalinti</Button>
+          <Button onClick={removeMenuItem} autoFocus>Pašalinti</Button>
         </DialogActions>
       </Dialog>
     <Typography variant="h5" >Virtuvės meniu</Typography><br/>
@@ -107,31 +153,31 @@ export default function Workers() {
             <TableCell>Aprašymas</TableCell>
             <TableCell>Kaina</TableCell>
             <TableCell>Savikaina</TableCell>
+            <TableCell>Yra Veganiškas</TableCell>
             <TableCell>Tipas</TableCell>
             <TableCell>Porcijos Dydis</TableCell>
-            <TableCell>Yra Veganiškas</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {menuItems.map((menuItem) => (
             <TableRow
-              key={row.name}
+              key={menuItem.id_Meniu_irasas}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                {menuItem.name}
               </TableCell>
-              <TableCell>{row.description}</TableCell>
-              <TableCell>{row.price}</TableCell>
-              <TableCell>{row.cost}</TableCell>
-              <TableCell>{row.type}</TableCell>
-              <TableCell>{row.size}</TableCell>
-              <TableCell>{row.isVegan}</TableCell>
-              <TableCell><RemoveButton action={handleClickOpen} /></TableCell>
+              <TableCell>{menuItem.description}</TableCell>
+              <TableCell>{menuItem.price}</TableCell>
+              <TableCell>{menuItem.cost}</TableCell>
+              <TableCell>{menuItem.isVegan == 1 ? "Taip" : "Ne"}</TableCell>
+              <TableCell style={{textTransform: "capitalize"}}>{menuItem.type}</TableCell>
+              <TableCell style={{textTransform: "capitalize"}}>{menuItem.size}</TableCell>
+              <TableCell><RemoveButton action={()=>{handleClickOpen(menuItem.id)}} /></TableCell>
               <TableCell>
-                <EditButton action={()=>{history.push('/virtuve/redaguoti/1')}}/></TableCell>
+                <EditButton action={()=>{history.push('/virtuve/redaguoti/'+menuItem.id)}}/></TableCell>
             </TableRow>
           ))}
         </TableBody>

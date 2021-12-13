@@ -1,9 +1,11 @@
-import { Button, Grid, TextField, Typography } from '@mui/material'
+import { Grid, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system';
 import React from 'react'
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
+import { useEffect } from 'react';
+import kitchenServices from '../../services/kitchen.services';
 import {
     BarChart,
     Bar,
@@ -13,26 +15,32 @@ import {
     ResponsiveContainer
   } from "recharts";
 
-  const data = [
-    {
-      name: "Kepta duona",
-      count: 50
-    },
-    {
-      name: "Kepsnys",
-      count: 100
-    },
-    {
-      name: "Cola",
-      count: 120
-    },
-  ];
-
 const Report = () => {
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-      };
+    const [data, setData] = React.useState([]);
+    const [date, setDate] = React.useState(new Date());
+
+    useEffect(() => {
+      kitchenServices.getReport().then(
+        (res) => {
+          const report = res.data.data;
+          setData(report);
+          console.log(report);
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          console.log(resMessage);
+        }
+      );
+    }, []);
+
+    const handleDateChange = (newValue) => {
+      setDate(newValue);
+    };
 
     return (
         <Box>
@@ -40,23 +48,26 @@ const Report = () => {
                Užsakymų ataskaita
             </Typography>
             <br/>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box component="form" noValidate sx={{ mt: 1 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 disableFuture
                                 label="Darbo diena"
+                                inputFormat="yyyy/MM/dd"
                                 openTo="day"
                                 views={["year", "month", "day"]}
                                 renderInput={(params) => <TextField {...params} />}
+                                value={date}
+                                onChange={handleDateChange}
                             />
                         </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12}>
                         <ResponsiveContainer height={400} width='100%'>
                             <BarChart
-                                data={data}
+                                data={data.filter((d) => d.date.substring(0, 10) == date.toISOString().substring(0, 10))}
                                 margin={{
                                     top: 5,
                                     right: 30,
@@ -65,20 +76,13 @@ const Report = () => {
                                 }}
                                 >
                                 <XAxis dataKey="name" />
-                                <YAxis />
+                                <YAxis dataKey="count"/>
                                 <Tooltip />
                                 <Bar dataKey="count" fill="#1976d2" />
                             </BarChart>
                         </ResponsiveContainer>
                     </Grid>
                 </Grid>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2, }}
-                    >
-                Atnaujinti
-                </Button>
           </Box>
         </Box>
     )

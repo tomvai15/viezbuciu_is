@@ -85,10 +85,34 @@ isAdmin = (req, res, next) => {
       }   
     })
   };
+isKitchen = (req, res, next) => {
+
+  User.getById(req.con, req.userId, function(err, rows)
+  {
+    if (err)
+    {
+      console.log(err);
+    }
+    const user = rows[0];
+    if (user.role==4)
+    {
+      next();
+    }
+    else
+    {
+      res.status(403).send({
+          message: "Require Kitchen Role!"
+        });
+        return;
+    }   
+  })
+};
+
 const authJwt = {
     verifyToken: verifyToken,
     isAdmin: isAdmin,
     isReception: isReception,
-    isClient: isClient
+    isClient: isClient,
+    isKitchen: isKitchen
 };
 module.exports = authJwt;

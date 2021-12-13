@@ -10,4 +10,13 @@ router.get("/getroom/:id",[authJwt.verifyToken,authJwt.isReception],roomsControl
 router.post("/addroom",[authJwt.verifyToken,authJwt.isReception],roomsController.addRoom) 
 router.post("/updateroom",[authJwt.verifyToken,authJwt.isReception],roomsController.updateRoom) 
 
+router.get("/usedrooms",[authJwt.verifyToken,authJwt.isReception],roomsController.usedRooms) 
+router.get("/waitingrooms",[authJwt.verifyToken,authJwt.isReception],roomsController.waitingRooms) 
+router.get("/departure",[authJwt.verifyToken,authJwt.isReception],roomsController.departure) 
+router.get("/numofrooms",[authJwt.verifyToken,authJwt.isReception],roomsController.numOfRooms) 
+router.post("/assignroom",[authJwt.verifyToken,authJwt.isReception],roomsController.assignRoom) 
+
+router.get("/roomswithreservation",[authJwt.verifyToken,authJwt.isReception],roomsController.getRoomsWithReservation) 
+router.get("/getreservations",[authJwt.verifyToken,authJwt.isReception],roomsController.getReservations) 
+
 module.exports = router

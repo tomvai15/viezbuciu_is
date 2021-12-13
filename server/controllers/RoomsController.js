@@ -51,4 +51,87 @@ module.exports = {
       }
     });
   },
+
+
+  usedRooms: function (req, res) {
+
+    Room.usedRooms(req.con, function (err, rows) {
+      const count = rows[0];
+      
+      if (!count) {
+        res.status(400).send({ message: "not found" });
+        return;
+      }
+      res.send({ count: count });
+    });
+  },
+
+  waitingRooms: function (req, res) {
+
+    Room.waitingRooms(req.con, function (err, rows) {
+      const count = rows[0];
+      
+      if (!count) {
+        res.status(400).send({ message: "not found" });
+        return;
+      }
+      res.send({ count: count });
+    });
+  },
+
+  departure: function (req, res) {
+
+    Room.departure(req.con, function (err, rows) {
+      const count = rows[0];
+      
+      if (!count) {
+        res.status(400).send({ message: "not found" });
+        return;
+      }
+      res.send({ count: count });
+    });
+  },
+
+  numOfRooms: function (req, res) {
+
+    Room.numOfRooms(req.con, function (err, rows) {
+      const count = rows[0];
+      
+      if (!count) {
+        res.status(400).send({ message: "not found" });
+        return;
+      }
+      res.send({ count: count });
+    });
+  },
+
+  assignRoom: function (req, res) {
+    Room.assignRoom(req.con, req.body, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "FAILED" });
+      }
+      res.send({ message: "Room assigned" });
+    });
+  },
+
+  getRoomsWithReservation: function (req, res) {
+    Room.getRoomsWithReservation(req.con, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "FAILED" });
+      }
+      res.send({ data: rows });
+    });
+  },
+
+  getReservations: function (req, res) {
+    Room.getReservations(req.con, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "FAILED" });
+      }
+      res.send({ data: rows });
+    });
+  },
 };

@@ -9,23 +9,54 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import React from 'react';
 import authService from '../../services/auth.service';
+import kitchenServices from '../../services/kitchen.services';
 
 const AddMenuItem = () => {
-    const user = authService.getCurrentUser()
-    console.log(user)
-    const [name, setName] = React.useState("")
-    const [description, setDescription] = React.useState("")
-    const [price, setPrice] = React.useState(1)
-    const [cost, setCost] = React.useState(1)
+    //const user = authService.getCurrentUser()
+    const user = 19
     const [type, setType] = React.useState(1)
     const [size, setSize] = React.useState(1)
-    const [isVegan, setIsVegan] = React.useState(1) 
-    const [response, setResponse] = React.useState({type: 0,message:""})
+    const [isVegan, setIsVegan] = React.useState(0) 
+    const [response, setResponse] = React.useState({type: 0,message: ""})
+
+    const handleTypeChange = (event) => {
+        setType(event.target.value);
+    };
+    const handleSizeChange = (event) => {
+        setSize(event.target.value);
+    };
+    const handleIsVeganChange = (event) => {
+        setIsVegan(event.target.checked == true ? 1 : 0);
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-      };
+
+        const menuItemData = {
+            user: user,
+            name: data.get("name"),
+            description: data.get("description"),
+            price: data.get("price"),
+            cost: data.get("cost"),
+            type: type,
+            size: size,
+            isVegan: isVegan
+          };
+
+          kitchenServices.addMenuItem(menuItemData).then((res)=>{
+            setResponse({type: 0, message:"Meniu įrašas sėkmingai pridėtas"})
+          },
+          error => {
+            const resMessage =
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString();
+            setResponse({type: 1, message: resMessage })
+          });
+    };
       
     return (
         <Box>
@@ -87,6 +118,7 @@ const AddMenuItem = () => {
                             id="type"
                             required
                             label="Tipas *"
+                            onChange={handleTypeChange}
                         >
                             <MenuItem value={1}>Užkandis</MenuItem>
                             <MenuItem value={2}>Pagrindinis patiekalas</MenuItem>
@@ -102,6 +134,7 @@ const AddMenuItem = () => {
                             id="size"
                             label="Porcijos dydis *"
                             required
+                            onChange={handleSizeChange}
                         >
                             <MenuItem value={1}>Didelė</MenuItem>
                             <MenuItem value={2}>Maža</MenuItem>
@@ -110,7 +143,7 @@ const AddMenuItem = () => {
                 </Grid>
                 <Grid item xs={12}>
                     <FormGroup>
-                        <FormControlLabel control={<Switch/>} label="Ar veganiškas" />
+                        <FormControlLabel control={<Switch checked={isVegan == 1 ? true : false} onChange={handleIsVeganChange}/>} label="Ar veganiškas" />
                     </FormGroup>
                 </Grid>
             </Grid>
@@ -122,6 +155,9 @@ const AddMenuItem = () => {
               Sukurti
             </Button>
           </Box>
+            <Typography variant="p" color={response.type==0 ? "green" : "red"}>
+                {response.message}
+            </Typography>
         </Box>
     )
 }

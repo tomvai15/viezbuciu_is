@@ -10,6 +10,12 @@ module.exports = {
       con.query(`Select * FROM meniu_irasai
                 WHERE id_Meniu_irasas='${id}'`, callback)
     },
+    addMenuItem: function (con, data, callback) {
+      con.query(`INSERT INTO meniu_irasai
+                (pavadinimas, aprasymas, kaina, savikaina, yra_veganiskas, tipas, porcijos_dydis, fk_Virtuves_darbuotojas)
+                VALUES ('${data.name}','${data.description}','${data.price}','${data.cost}','${data.isVegan}','${data.type}','${data.size}','${data.user}')`,
+                callback)
+    },
     updateMenuItem: function (con, data, callback) {
       isVegan = data.isVegan ? 1 : 0;
       con.query(`UPDATE meniu_irasai

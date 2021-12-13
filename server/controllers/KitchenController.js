@@ -20,6 +20,16 @@ module.exports = {
       res.send({ data: menuItem });
     });
   },
+  addMenuItem: function (req, res) {
+    Kitchen.addMenuItem(req.con, req.body, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "Failed" });
+      } else {
+        res.send({ message: "Menu item added" });
+      }
+    });
+  },
   updateMenuItem: function (req, res) {
     Kitchen.updateMenuItem(req.con, req.body, function (err, rows) {
       if (err) {

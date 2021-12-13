@@ -5,6 +5,7 @@ const  {authJwt}  = require("../middleware");
 
 router.get("/getMenu",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.getMenu)
 router.get("/getMenuItem/:id",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.getMenuItem)
+router.post("/addMenuItem",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.addMenuItem) 
 router.post("/updateMenuItem",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.updateMenuItem) 
 router.post("/removeMenuItem",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.removeMenuItem)
 module.exports = router

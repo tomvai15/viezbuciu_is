@@ -12,6 +12,10 @@ class KitchenService {
     {
         return axios.get(API_URL + 'getMenuItem/'+id, { headers: authHeader() })
     }
+    addMenuItem(data)
+    {
+        return axios.post(API_URL + 'addMenuItem', data, { headers: authHeader() })
+    }
     updateMenuItem(data) 
     {
         return axios.post(API_URL + 'updateMenuItem', data, { headers: authHeader() })

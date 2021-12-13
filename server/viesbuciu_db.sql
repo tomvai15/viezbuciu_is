@@ -148,7 +148,6 @@ INSERT INTO `klientai` (`banko_saskaita`, `korteles_galiojimo_data`, `CVV_numeri
 --
 
 CREATE TABLE `maisto_uzsakymai` (
-  `laikas` date DEFAULT NULL,
   `kiekis` int(11) NOT NULL,
   `pristatymo_data` datetime NOT NULL,
   `pristatymo_tipas` int(11) NOT NULL,
@@ -312,7 +311,7 @@ CREATE TABLE `rezervacijos` (
   `kambario_tipas` int(11) NOT NULL,
   `id_Rezervacija` int(11) NOT NULL,
   `fk_Klientas` int(11) NOT NULL,
-  `fk_Kambarys` int(11) NOT NULL
+  `fk_Kambarys` int(11) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_lithuanian_ci;
 
 -- --------------------------------------------------------

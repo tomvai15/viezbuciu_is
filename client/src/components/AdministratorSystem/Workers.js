@@ -79,6 +79,7 @@ export default function Workers() {
   useEffect(() => {
     adminService.getWorkers().then((res)=>{
       const workers = res.data.data;
+      console.log(workers);
       setWorkers(workers.map(worker=> createData(worker.vardas,worker.pavarde,worker.darbo_vieta=="r_darbuotojas" ? "Registratūra" : "Virtuvė",worker.el_pastas,worker.telefono_numeris,worker.gimimo_data.substring(0,10),worker.idarbinimo_data.substring(0,10),worker.atlyginimas,worker.asmens_kodas,worker.darbo_sutartis,worker.id)));
     },
     error => {

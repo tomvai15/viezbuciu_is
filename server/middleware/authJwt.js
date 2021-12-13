@@ -63,7 +63,28 @@ isAdmin = (req, res, next) => {
       }   
     })
   };
+  isClient = (req, res, next) => {
 
+    User.getById(req.con, req.userId, function(err, rows)
+    {
+      if (err)
+      {
+        console.log(err);
+      }
+      const user = rows[0];
+      if (user.role==2)
+      {
+        next();
+      }
+      else
+      {
+        res.status(403).send({
+            message: "Require Client Role!"
+          });
+          return;
+      }   
+    })
+  };
 isKitchen = (req, res, next) => {
 
   User.getById(req.con, req.userId, function(err, rows)
@@ -91,6 +112,7 @@ const authJwt = {
     verifyToken: verifyToken,
     isAdmin: isAdmin,
     isReception: isReception,
+    isClient: isClient,
     isKitchen: isKitchen
 };
 module.exports = authJwt;

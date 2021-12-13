@@ -8,4 +8,5 @@ router.get("/getMenuItem/:id",[authJwt.verifyToken,authJwt.isKitchen],kitchenCon
 router.post("/addMenuItem",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.addMenuItem) 
 router.post("/updateMenuItem",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.updateMenuItem) 
 router.post("/removeMenuItem",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.removeMenuItem)
+router.get("/getReport",[authJwt.verifyToken,authJwt.isKitchen],kitchenController.getReport)
 module.exports = router

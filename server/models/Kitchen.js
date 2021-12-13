@@ -36,5 +36,11 @@ module.exports = {
       con.query(`DELETE FROM meniu_irasai
                 WHERE id_Meniu_irasas='${id}'`, callback)
     },
+    getReport: function(con, callback){
+      con.query(`SELECT laikas as date, SUM(kiekis) as count, meniu_irasai.pavadinimas as name
+                FROM maisto_uzsakymai
+                LEFT JOIN meniu_irasai ON maisto_uzsakymai.fk_Meniu_irasas = meniu_irasai.id_Meniu_irasas
+                GROUP BY name, date`, callback)
+    },
 };
   

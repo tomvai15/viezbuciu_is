@@ -23,6 +23,10 @@ class KitchenService {
     removeMenuItem(id) 
     {
         return axios.post(API_URL + 'removeMenuItem', {id:id} , { headers: authHeader() })
-    }  
+    }
+    getReport()
+    {
+        return axios.get(API_URL + 'getReport', { headers: authHeader() })
+    }
 }
 export default new KitchenService ()

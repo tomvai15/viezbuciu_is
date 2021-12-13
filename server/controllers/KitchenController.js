@@ -51,4 +51,13 @@ module.exports = {
       res.send({ message:"Menu item deleted" })
     })
   },
+  getReport: function (req, res) {
+    Kitchen.getReport(req.con, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "FAILED" });
+      }
+      res.send({ data: rows });
+    });
+  },
 };

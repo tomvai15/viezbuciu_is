@@ -134,4 +134,13 @@ module.exports = {
       res.send({ data: rows });
     });
   },
+  getRoomsForAssign: function (req, res) {
+    Room.getRoomsForAssign(req.con, req.params.type, req.params.beds, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "FAILED" });
+      }
+      res.send({ data: rows });
+    });
+  },
 };

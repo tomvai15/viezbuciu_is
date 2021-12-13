@@ -59,6 +59,11 @@ class ReceptionService {
     {
         return axios.get(API_URL + 'getreservations', { headers: authHeader() })
     }
+
+    getRoomsForAssign(type, beds) 
+    {
+        return axios.get(API_URL + 'getroomsforassign/'+type+'/'+beds, { headers: authHeader() })
+    }
 }
 
 export default new ReceptionService ()

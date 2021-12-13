@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <style>
+        table, td, th {
+          border: 1px solid black;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart'],'language': 'lt' });
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'Data');
+        data.addColumn('number', 'Pajamos');
+        data.addColumn('number', 'Išlaidos');
+        data.addColumn('number', 'Pelnas');
+        {{#each dat as | d |}}data.addRow([new Date('{{d.date}}'),{{d.income}},{{d.costs}},{{d.profit}}]);{{/each}}
+
+
+        var chart = new google.visualization.LineChart(
+            document.getElementById('curve_chart'));
+        chart.draw(data, {title: '',
+                    curveType: 'function',
+                    width: 1400, height: 600,
+                    //vAxis: {title: "cr", titleTextStyle: {color: "green"}},
+                    //hAxis: {title: "time", titleTextStyle: {color: "green"}},
+                    lineWidth: 1,
+                    legend: { position: 'bottom' }}
+        );
+      }
+    </script>
+  </head>
+  <body>
+      <div style="margin: 80px;">
+            <h1>Pelno ir išlaidų ataskaita</h1>
+            <table>
+                <tr>
+                    <th>Data</th><th>Pajamos</th><th>Išlaidos</th><th>Pelnas</th>
+                </tr>
+                {{#each dat as | d |}}
+                 <tr>
+                    <td>{{d.date}}</td><td>{{d.income}}</td><td>{{d.costs}}</td><td>{{d.profit}}</td>
+                </tr>
+                {{/each}}
+            </table>
+            <div id="curve_chart" style="position:absolute; left:-80px;width:100%;"></div>
+      </div>
+  </body>
+</html>

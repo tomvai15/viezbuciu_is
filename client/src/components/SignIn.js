@@ -15,11 +15,35 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import authService from '../services/auth.service';
 import { useHistory } from 'react-router';
 import { useState } from 'react';
+import { useEffect } from 'react';
 const theme = createTheme();
 
 export default function SignIn() {
   const history = useHistory()
   const [error,setError] =  useState("")
+
+  useEffect(() => {
+      const user = authService.getCurrentUser()
+      if (!user)
+      {return}
+      switch(user.role) {
+        case 1:
+          history.push('/administracija/')
+          break;
+        case 2:
+          history.push('/klientas/')
+          break;
+        case 3:
+          history.push('/registratura/')
+          break;
+        case 4:
+          history.push('/virtuve/')
+          break;
+        default:
+          history.push('/')
+      }
+  },[])
+
   const handleSubmit = (event) => 
   {
     event.preventDefault();

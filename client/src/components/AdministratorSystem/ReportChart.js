@@ -38,7 +38,6 @@ const ReportTable = ({data}) => {
                 ...theme.typography.body1,
               }}
             >
-              Sales ($)
             </Label>
           </YAxis>
           <CartesianGrid strokeDasharray="3 3" />
@@ -64,7 +63,7 @@ const ReportTable = ({data}) => {
             isAnimationActive={false}
             type="basis"
             dataKey="profit"
-            stroke="green"
+            stroke="orange"
             dot={false}
           />
           <Legend verticalAlign="bottom" height={36}/>

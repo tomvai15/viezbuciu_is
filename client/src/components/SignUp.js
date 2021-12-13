@@ -25,6 +25,8 @@ export default function SignUp() {
 
   const [date, setDate] = React.useState(new Date());
   const [password, setPassword] = React.useState("");
+  const [cvv, setCvv] = React.useState("");
+  const [bank, setBank] = React.useState("");
   const [error, SetError] = React.useState("");
   const [response, setResponse] = React.useState({type:0,message:""});
   const handlePasswordChange = (event) => {
@@ -38,6 +40,14 @@ export default function SignUp() {
   const handleSubmit = (event) => 
   {
     event.preventDefault();
+    if (!/(^[A-Z]{2}[0-9]{18}$)/.test(bank))
+    {
+      return
+    }
+    if (!/(^[0-9]{3}$)/.test(cvv))
+    {
+      return
+    }
     const data = new FormData(event.currentTarget);
 
     if (data.get('password') != data.get('comfirmpassword'))
@@ -137,9 +147,8 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="username"
-                  label="Prisijungimo vardas"
+                  label="Adresas"
                   name="username"
-                  autoComplete="username"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -150,6 +159,10 @@ export default function SignUp() {
                   label="Banko sąskaitos numeris"
                   name="bank"
                   autoComplete="bank"
+                  value={bank}
+                  error={!/(^[A-Z]{2}[0-9]{18}$)/.test(bank) && bank !=''}
+                  helperText={/(^[A-Z]{2}[0-9]{18}$)/.test(bank) == false && bank !='' ? "Netinkamas banko sąskaitos formatas": ""}
+                  onChange={(e)=>{setBank(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -172,9 +185,13 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="cvv"
+                  type="number"
                   label="CVV numeris"
                   name="cvv"
-                  autoComplete="cvv"
+                  value={cvv}
+                  error={!/(^[0-9]{3}$)/.test(cvv) && cvv !=''}
+                  helperText={/(^[0-9]{3}$)/.test(cvv) == false && cvv !='' ? "CVV formatas: xxx": ""}
+                  onChange={(e)=>{setCvv(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={12}>

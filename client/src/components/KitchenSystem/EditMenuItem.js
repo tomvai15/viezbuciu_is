@@ -107,7 +107,7 @@ const EditMenuItem = () => {
                     label="Kaina"
                     name="price"
                     inputProps={{
-                        step: "0.1"
+                        step: "0.01"
                     }}
                     value={menuItem.price}
                     onChange={(event)=>setMenuItem({...menuItem,price:event.target.value})}
@@ -122,7 +122,7 @@ const EditMenuItem = () => {
                     label="Savikaina"
                     name="cost"
                     inputProps={{
-                        step: "0.1"
+                        step: "0.01"
                     }}
                     value={menuItem.cost}
                     onChange={(event)=>setMenuItem({...menuItem,cost:event.target.value})}

@@ -93,7 +93,7 @@ const AddMenuItem = () => {
                     label="Kaina"
                     name="price"
                     inputProps={{
-                        step: "0.1"
+                        step: "0.01"
                     }}
                     />
                 </Grid>
@@ -106,7 +106,7 @@ const AddMenuItem = () => {
                     label="Savikaina"
                     name="cost"
                     inputProps={{
-                        step: "0.1"
+                        step: "0.01"
                     }}
                     />
                 </Grid>

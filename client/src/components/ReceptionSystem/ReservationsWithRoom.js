@@ -36,100 +36,42 @@ import authService from "../../services/auth.service";
 import { useEffect } from "react";
 import { format } from "date-fns";
 
-function createData(id, start, end, type, bedAmount, breakfast, price, room) {
-  return { id, start, end, type, bedAmount, breakfast, price, room };
+function createData(
+  id,
+  start,
+  end,
+  type,
+  bedAmount,
+  breakfast,
+  price,
+  room,
+  number,
+  typeId
+) {
+  return {
+    id,
+    start,
+    end,
+    type,
+    bedAmount,
+    breakfast,
+    price,
+    room,
+    number,
+    typeId,
+  };
 }
-// function createData(
-//   id,
-//   room,
-//   name,
-//   surname,
-//   email,
-//   start,
-//   end,
-//   type,
-//   bedAmount,
-//   breakfast,
-//   price
-// ) {
-//   return {
-//     id,
-//     room,
-//     name,
-//     surname,
-//     email,
-//     start,
-//     end,
-//     type,
-//     bedAmount,
-//     breakfast,
-//     price,
-//   };
-// }
-
-// const rows = [
-//   createData(
-//     1,
-//     "501",
-//     "Jonas",
-//     "Jonaitis",
-//     "jonas@pastas.lt",
-//     "2021-04-04",
-//     "2021-04-06",
-//     "Ekonominis",
-//     2,
-//     "Užsakyta",
-//     123.99
-//   ),
-//   createData(
-//     2,
-//     "220",
-//     "Paulius",
-//     "Pauliukas",
-//     "paulius@pastas.lt",
-//     "2021-11-04",
-//     "2021-12-09",
-//     "Standartinis",
-//     4,
-//     "",
-//     123.99
-//   ),
-//   createData(
-//     3,
-//     "-",
-//     "Petras",
-//     "Petraitis",
-//     "petras@pastas.lt",
-//     "2022-04-10",
-//     "2022-04-13",
-//     "Prabangus",
-//     2,
-//     "Užsakyta",
-//     123.99
-//   ),
-//   createData(
-//     4,
-//     "-",
-//     "Kazimieras",
-//     "Kazlauskas",
-//     "kazys@pastas.lt",
-//     "2022-04-11",
-//     "2022-04-12",
-//     "Prabangus",
-//     1,
-//     "Užsakyta",
-//     100.99
-//   ),
-// ];
 
 export default function RezervationsWithRoom() {
   const history = useHistory();
 
   const [open, setOpen] = React.useState(false);
   const [selectedReservation, setSelectedReservation] = React.useState(false);
-  const [selectedRoom, setSelectedRoom] = React.useState(201);
+  const [selectedRoom, setSelectedRoom] = React.useState(-1);
   const [response, setResponse] = useState({ type: 0, message: "" });
   const [reservations, setReservations] = React.useState([]);
+  const [reservation, setReservation] = React.useState([]);
+  const [rooms, setRooms] = React.useState([]);
   const [selectedId, setSelectedId] = React.useState(-1);
 
   useEffect(() => {
@@ -149,7 +91,9 @@ export default function RezervationsWithRoom() {
               reservation.lovu_skaicius,
               reservation.pusryciai,
               reservation.kaina,
-              reservation.fk_Kambarys
+              reservation.fk_Kambarys,
+              reservation.numeris,
+              reservation.kambario_tipas
             )
           )
         );
@@ -167,7 +111,35 @@ export default function RezervationsWithRoom() {
   }, []);
 
   const handleClickOpen = (reservation) => {
-    setSelectedReservation(reservation);
+    setReservation(reservation.id)
+    receptionService
+      .getRoomsForAssign(reservation.typeId, reservation.bedAmount)
+      .then(
+        (res) => {
+          const reservations = res.data.data;
+          console.log(reservations);
+          setRooms(
+            reservations.map((reservation) => {
+              return {
+                kambario_id: reservation.id_Kambarys,
+                numeris: reservation.numeris,
+                vaizdas: reservation.name,
+              };
+            })
+          );
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          console.log(resMessage);
+        }
+      );
+      console.log(rooms.length)
+    setSelectedReservation(reservation.id);
     setOpen(true);
   };
 
@@ -175,12 +147,12 @@ export default function RezervationsWithRoom() {
     setSelectedRoom(event.target.value);
   };
 
-  const handleClose = () => {
+  const handleAssign = () =>{
     const data = {
       // reservation: selectedReservation,
       // room: selectedRoom
-      reservation: 2,
-      room: 121,
+      reservation: reservation,
+      room: selectedRoom,
     };
 
     receptionService.assignRoom(data).then(
@@ -199,6 +171,13 @@ export default function RezervationsWithRoom() {
         // setResponse({ type: 1, message: resMessage });
       }
     );
+    setOpen(false);
+    window.location.reload(false);
+  }
+
+
+
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -227,20 +206,16 @@ export default function RezervationsWithRoom() {
                 onChange={handleRoomChange}
                 value={selectedRoom}
               >
-                <MenuItem value={"201"}>201 - Į gatvę</MenuItem>
-                <MenuItem value={"202"}>202 - Į upę</MenuItem>
-                <MenuItem value={"203"}>203 - Į senamiestį</MenuItem>
-                <MenuItem value={"204"}>204 - Į parką</MenuItem>
-                <MenuItem value={"401"}>401 - Į parką</MenuItem>
-                <MenuItem value={"409"}>409 - Į parką</MenuItem>
-                <MenuItem value={"411"}>411 - Į parką</MenuItem>
+                <MenuItem value={-1}>--- Pasirinkite kambarį ----</MenuItem>
+                {rooms.map((row) => <MenuItem value={row.kambario_id}>{row.numeris} - {row.vaizdas}</MenuItem>)}
+
               </Select>
             </FormControl>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Atšaukti</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={handleAssign} autoFocus>
             Priskirti
           </Button>
         </DialogActions>
@@ -267,13 +242,13 @@ export default function RezervationsWithRoom() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell>
-                  {row.room == null ? (
+                  {row.number == null ? (
                     <Typography color="red" fontWeight="bold">
                       —
                     </Typography>
                   ) : (
                     <Typography color="green" fontWeight="bold">
-                      {row.room}
+                      {row.number}
                     </Typography>
                   )}
                 </TableCell>
@@ -298,7 +273,7 @@ export default function RezervationsWithRoom() {
                   ) : (
                     <SetRoomButton
                       action={() => {
-                        handleClickOpen(row.id);
+                        handleClickOpen(row);
                       }}
                     />
                   )}

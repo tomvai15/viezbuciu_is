@@ -3,10 +3,10 @@ module.exports = {
       con.query(`SELECT rezervacijos.* FROM rezervacijos WHERE id_Rezervacija='${id}' and pradzia>CURDATE()`, callback);
     },
     getAll: function (con, userId, callback) {
-      con.query(`SELECT rezervacijos.*, ifnull(kambariai.kaina,0)+ifnull(maistoKaina,0) as kaina, kambario_tipai.name   FROM rezervacijos 
+      con.query(`SELECT rezervacijos.*, (ifnull(kambariai.kaina,0)+ifnull(maistoKaina,0)) as kaina, kambario_tipai.name   FROM rezervacijos 
       left join kambariai on fk_Kambarys = id_Kambarys 
       left join (select sum(maisto_uzsakymai.kiekis * meniu_irasai.kaina) as maistoKaina, maisto_uzsakymai.fk_Rezervacija from maisto_uzsakymai
-                  INNER join meniu_irasai on meniu_irasai.id_Meniu_irasas = maisto_uzsakymai.fk_Meniu_irasas) b
+                  INNER join meniu_irasai on meniu_irasai.id_Meniu_irasas = maisto_uzsakymai.fk_Meniu_irasas group by maisto_uzsakymai.fk_Rezervacija) b
       on b.fk_Rezervacija = rezervacijos.id_Rezervacija
       inner join kambario_tipai on rezervacijos.kambario_tipas = kambario_tipai.id_Kambario_tipas
       WHERE fk_Klientas='${userId}'`, callback);

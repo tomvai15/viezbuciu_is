@@ -77,7 +77,7 @@ export default function ReservationsMain() {
              
             <Route
             path="/klientas/foodorders/:id"
-            render={props => (<Box><Typography variant="h5" >Maisto užsakymas</Typography><br/><AddFood/></Box>)}/>
+            render={props => (<AddFood/>)}/>
       </Box>
     </Box>
   );

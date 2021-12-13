@@ -10,6 +10,7 @@ import Timeline, {
 import "react-calendar-timeline/lib/Timeline.css";
 import moment from "moment";
 import "moment/locale/lt";
+import { useEffect } from "react";
 import {
   Alert,
   Button,
@@ -28,24 +29,14 @@ import EditRoom from "./EditRoom";
 import RoomInfo from "./RoomInfo";
 import { RoomNumberWithInfoButton } from "./RoomNumberWithInfoButton";
 import ReservationInfo from "./ReservationInfo";
+import receptionService from "../../services/reception.services";
 
 export function TimelineWindow() {
-  //       .filter(g => g.root || openGroups[g.parent])
-  //       .map(group => {
-  //         return Object.assign({}, group, {
-  //           title: group.root ? (
-  //             <div onClick={() => this.toggleGroup(parseInt(group.id))} style={{ cursor: "pointer" }}>
-  //               {openGroups[parseInt(group.id)] ? "[-]" : "[+]"} {group.title}
-  //             </div>
-  //           ) : (
-  //             <div style={{ paddingLeft: 20 }}>{group.title}</div>
-  //           )
-  //         });
-  //       });
-
   const [open, setOpen] = React.useState(false);
   const [openRoom, setOpenRoom] = React.useState(false);
   const [roomId, setRoomId] = React.useState("");
+  const [items, setItems] = React.useState([]);
+  const [groups, setGroups] = React.useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -55,7 +46,8 @@ export function TimelineWindow() {
     setOpen(false);
   };
 
-  const handleClickOpenRoom = () => {
+  const handleClickOpenRoom = (room) => {
+    console.log(room);
     setOpenRoom(true);
   };
 
@@ -63,104 +55,189 @@ export function TimelineWindow() {
     setOpenRoom(false);
   };
 
-  const groups = [
-    {
-      id: 1,
-      title: (
-        <RoomNumberWithInfoButton title={"101"} action={handleClickOpenRoom} />
-      ),
-    },
-    {
-      id: 2,
-      title: (
-        <RoomNumberWithInfoButton title={"102"} action={handleClickOpenRoom} />
-      ),
-    },
-    {
-      id: 3,
-      title: (
-        <RoomNumberWithInfoButton title={"103"} action={handleClickOpenRoom} />
-      ),
-    },
-    {
-      id: 4,
-      title: (
-        <RoomNumberWithInfoButton title={"201"} action={handleClickOpenRoom} />
-      ),
-    },
-    {
-      id: 5,
-      title: (
-        <RoomNumberWithInfoButton title={"202"} action={handleClickOpenRoom} />
-      ),
-    },
-    {
-      id: 6,
-      title: (
-        <RoomNumberWithInfoButton title={"203"} action={handleClickOpenRoom} />
-      ),
-    },
-    {
-      id: 7,
-      title: (
-        <RoomNumberWithInfoButton title={"204"} action={handleClickOpenRoom} />
-      ),
-    },
-  ];
+  useEffect(() => {
+    receptionService.getRooms().then(
+      (res) => {
+        const roomsData = res.data.data;
+        setGroups(
+          roomsData.map((room) => {
+            return {
+              id: room.id_Kambarys,
+              title: room.numeris,
+            };
+          })
+        );
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+      }
+    );
+    console.log(groups);
+    receptionService.getRoomsWithReservation().then(
+      (res) => {
+        const data = res.data.data;
+        setItems(
+          data.map((value) => {
+            return {
+              id: value.id_Rezervacija,
+              group: value.id_Kambarys,
+              start_time:  new Date(value.pradzia),
+              end_time: new Date(value.pabaiga),
+              style: {
+                backgroundColor: "red",
+              },
+            };
+          })
+        );
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+      }
+    );
 
-  const items = [
-    {
-      id: 1,
-      group: 1,
-      start_time: moment().startOf("day").subtract(10, "day").add(12, "hour"),
-      end_time: moment().endOf("day").subtract(2, "day").add(11, "hour"),
-    },
-    {
-      id: 2,
-      group: 2,
-      // title: "Rezervuotas",
-      start_time: moment().startOf("day").add(12, "hour"),
-      end_time: moment().endOf("day").add(1, "day").add(11, "hour"),
-    },
-    {
-      id: 3,
-      group: 1,
-      start_time: moment().startOf("day").subtract(1, "day").add(12, "hour"),
-      end_time: moment().startOf("day").add(15, "day").add(11, "hour"),
-      style: {
-        backgroundColor: "red",
+    setGroups([
+      {
+        id: 10000,
+        title: ""
       },
-    },
-    {
-      id: 4,
-      group: 4,
-      start_time: moment().startOf("day").subtract(5, "day").add(12, "hour"),
-      end_time: moment().startOf("day").add(10, "day").add(11, "hour"),
-      style: {
-        backgroundColor: "red",
-      },
-    },
-    {
-      id: 5,
-      group: 5,
-      start_time: moment().startOf("day").add(12, "hour"),
-      end_time: moment().startOf("day").add(1, "day").add(11, "hour"),
-      style: {
-        backgroundColor: "red",
-      },
-    },
-  ];
+    ]);
+
+  }, []);
+
+  // const groups = rooms.map((room) => {
+  //   return {
+  //     id: room,
+  //     title: (
+  //       <RoomNumberWithInfoButton
+  //         title={room}
+  //         action={() => {
+  //           handleClickOpenRoom(room);
+  //         }}
+  //       />
+  //     ),
+  //   };
+  // });
+
+  // const items = reservations.map((reservation) => {
+  //   return {
+  //     id: reservation.id_Rezervacija,
+  //     group: reservation.fk_Kambarys,
+  //     start_time: reservation.pradzia,
+  //     end_time: reservation.pabaiga,
+  //   };
+  // });
+  // console.log(items);
+  // console.log(gg);
+  // const groups = [
+  //   {
+  //     id: 1,
+  //     title: (
+  //       <RoomNumberWithInfoButton title={"101"} action={handleClickOpenRoom} />
+  //     ),
+  //   },
+  //   {
+  //     id: 2,
+  //     title: (
+  //       <RoomNumberWithInfoButton title={"102"} action={handleClickOpenRoom} />
+  //     ),
+  //   },
+  //   {
+  //     id: 3,
+  //     title: (
+  //       <RoomNumberWithInfoButton title={"103"} action={handleClickOpenRoom} />
+  //     ),
+  //   },
+  //   {
+  //     id: 4,
+  //     title: (
+  //       <RoomNumberWithInfoButton title={"201"} action={handleClickOpenRoom} />
+  //     ),
+  //   },
+  //   {
+  //     id: 5,
+  //     title: (
+  //       <RoomNumberWithInfoButton title={"202"} action={handleClickOpenRoom} />
+  //     ),
+  //   },
+  //   {
+  //     id: 6,
+  //     title: (
+  //       <RoomNumberWithInfoButton title={"203"} action={handleClickOpenRoom} />
+  //     ),
+  //   },
+  //   {
+  //     id: 7,
+  //     title: (
+  //       <RoomNumberWithInfoButton title={"204"} action={handleClickOpenRoom} />
+  //     ),
+  //   },
+  // ];
+
+  // const items = [
+
+  //      {
+  //       start_time: moment().startOf("day").subtract(10, "day").add(12, "hour"),
+  //     id: 1,
+  //     group: 1,
+  //     end_time: moment().endOf("day").subtract(2, "day").add(11, "hour"),
+  //   },
+  //   {
+  //     id: 2,
+  //     group: 2,
+  //     // title: "Rezervuotas",
+  //     start_time: moment().startOf("day").add(12, "hour"),
+  //     end_time: moment().endOf("day").add(1, "day").add(11, "hour"),
+  //   },
+  //   {
+  //     id: 3,
+  //     group: 1,
+  //     start_time: moment().startOf("day").subtract(1, "day").add(12, "hour"),
+  //     end_time: moment().startOf("day").add(15, "day").add(11, "hour"),
+  //     style: {
+  //       backgroundColor: "red",
+  //     },
+  //   },
+  //   {
+  //     id: 4,
+  //     group: 4,
+  //     start_time: moment().startOf("day").subtract(5, "day").add(12, "hour"),
+  //     end_time: moment().startOf("day").add(10, "day").add(11, "hour"),
+  //     style: {
+  //       backgroundColor: "red",
+  //     },
+  //   },
+  //   {
+  //     id: 5,
+  //     group: 5,
+  //     start_time: moment().startOf("day").add(12, "hour"),
+  //     end_time: moment().startOf("day").add(1, "day").add(11, "hour"),
+  //     style: {
+  //       backgroundColor: "red",
+  //     },
+  //   },
+  // ];
   const defaultTimeStart = moment().startOf("day").subtract(3, "day").toDate();
   const defaultTimeEnd = moment().startOf("day").add(1, "month").toDate();
-
-  const newGroups = groups;
+  // const newGroups = groups;
 
   const OnRoomClicked = (id) => {
     var item = items.find((element) => {
       return element.id === id;
     });
     setRoomId(item.id);
-    handleClickOpen();
+   // handleClickOpen();
   };
 
   var itemRenderer = ({
@@ -187,7 +264,7 @@ export function TimelineWindow() {
   };
 
   return (
-    <div > 
+    <div>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -218,8 +295,9 @@ export function TimelineWindow() {
         </DialogActions>
       </Dialog>
 
-      <Timeline className="timeline"
-        groups={newGroups}
+      <Timeline
+        className="timeline"
+        groups={groups}
         items={items}
         onItemSelect={(id) => OnRoomClicked(id)}
         onItemClick={(id) => OnRoomClicked(id)}

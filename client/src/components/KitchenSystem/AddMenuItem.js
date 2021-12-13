@@ -7,33 +7,63 @@ import Select from '@mui/material/Select';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import React from 'react'
-
-const types = [
-    "Užkandis",
-    "Pagrindinis patiekalas",
-    "Gėrimas",
-];
-
-const sizes = [
-    "Didelė",
-    "Maža",
-];
+import React from 'react';
+import authService from '../../services/auth.service';
+import kitchenServices from '../../services/kitchen.services';
 
 const AddMenuItem = () => {
+    const user = authService.getCurrentUser().id
+    const [type, setType] = React.useState(1)
+    const [size, setSize] = React.useState(1)
+    const [isVegan, setIsVegan] = React.useState(0) 
+    const [response, setResponse] = React.useState({type: 0,message: ""})
+
+    const handleTypeChange = (event) => {
+        setType(event.target.value);
+    };
+    const handleSizeChange = (event) => {
+        setSize(event.target.value);
+    };
+    const handleIsVeganChange = (event) => {
+        setIsVegan(event.target.checked == true ? 1 : 0);
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-      };
+
+        const menuItemData = {
+            user: user,
+            name: data.get("name"),
+            description: data.get("description"),
+            price: data.get("price"),
+            cost: data.get("cost"),
+            type: type,
+            size: size,
+            isVegan: isVegan
+          };
+
+          kitchenServices.addMenuItem(menuItemData).then((res)=>{
+            setResponse({type: 0, message:"Meniu įrašas sėkmingai pridėtas"})
+          },
+          error => {
+            const resMessage =
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString();
+            setResponse({type: 1, message: resMessage })
+          });
+    };
       
     return (
         <Box>
             <Typography variant="h5">
-               Naujo meniu įrašo kūrimas 
+               Naujo meniu įrašo kūrimas
             </Typography>
             <br/>
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <Grid  container spacing={2}>
                 <Grid item xs={12}>
                     <TextField
@@ -62,7 +92,7 @@ const AddMenuItem = () => {
                     label="Kaina"
                     name="price"
                     inputProps={{
-                        step: "0.1"
+                        step: "0.01"
                     }}
                     />
                 </Grid>
@@ -75,7 +105,7 @@ const AddMenuItem = () => {
                     label="Savikaina"
                     name="cost"
                     inputProps={{
-                        step: "0.1"
+                        step: "0.01"
                     }}
                     />
                 </Grid>
@@ -87,12 +117,11 @@ const AddMenuItem = () => {
                             id="type"
                             required
                             label="Tipas *"
+                            onChange={handleTypeChange}
                         >
-                            {types.map((type) => (
-                                <MenuItem value={type}>
-                                    {type}
-                                </MenuItem>
-                            ))}
+                            <MenuItem value={1}>Užkandis</MenuItem>
+                            <MenuItem value={2}>Pagrindinis patiekalas</MenuItem>
+                            <MenuItem value={3}>Gėrimas</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -104,18 +133,16 @@ const AddMenuItem = () => {
                             id="size"
                             label="Porcijos dydis *"
                             required
+                            onChange={handleSizeChange}
                         >
-                            {sizes.map((size) => (
-                                <MenuItem value={size}>
-                                    {size}
-                                </MenuItem>
-                            ))}
+                            <MenuItem value={1}>Didelė</MenuItem>
+                            <MenuItem value={2}>Maža</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                     <FormGroup>
-                        <FormControlLabel control={<Switch/>} label="Ar veganiškas" />
+                        <FormControlLabel control={<Switch checked={isVegan == 1 ? true : false} onChange={handleIsVeganChange}/>} label="Ar veganiškas" />
                     </FormGroup>
                 </Grid>
             </Grid>
@@ -127,6 +154,9 @@ const AddMenuItem = () => {
               Sukurti
             </Button>
           </Box>
+            <Typography variant="p" color={response.type==0 ? "green" : "red"}>
+                {response.message}
+            </Typography>
         </Box>
     )
 }

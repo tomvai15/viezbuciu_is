@@ -9,71 +9,99 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useHistory } from "react-router";
-
+import { useEffect } from 'react';
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { format } from 'date-fns';
 import {
   RemoveButton,
   EditButton,
   AddButton,
   AddFoodButton,
 } from "../CommonFunctions/Buttons";
+import authService from "../../services/auth.service";
+import clientServices from "../../services/client.services";
 
 function createData(id, start, end, type, bedAmount, breakfast, price) {
   return { id, start, end, type, bedAmount, breakfast, price };
 }
 
-const rows = [
-  createData(
-    1,
-    "2021-04-04",
-    "2021-04-06",
-    "Ekonominis",
-    2,
-    "Užsakyta",
-    123.99
-  ),
-  createData(2, "2021-11-04", "2021-12-09", "Standartinis", 4, "", 123.99),
-  createData(3, "2022-04-10", "2022-04-13", "Prabangus", 2, "Užsakyta", 123.99),
-];
 
 export default function Rezervations() {
+  const [reservations, setReservations] = React.useState([]);
+  const [selectedId, setSelectedId] = React.useState(-1);
+  useEffect(() => {
+    const user = authService.getCurrentUser();
+    console.log(user);
+    clientServices.getReservations(user.id).then((res)=>{
+      const reservations = res.data.data;
+      console.log(reservations)
+      setReservations(reservations.map(reservation=> createData(reservation.id_Rezervacija, reservation.pradzia, reservation.pabaiga, reservation.name, reservation.lovu_skaicius, reservation.pusryciai, reservation.kaina)));
+    },
+    error => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(resMessage);
+    });
+  },[])
   const history = useHistory();
 
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (id) => {
+    console.log(id)
+    setSelectedId(id);
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
+    setSelectedId(-1);
   };
+  const confirmDelete = () => {
+    clientServices.removeReservation(selectedId).then((res)=>{
+      console.log("ok");
+      window.location.reload(false);
+    },
+    error => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(resMessage);
+    });
+    setSelectedId(-1);
+    setOpen(false);
+  };
+  
 
   return (
     <Box>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={confirmDelete}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Ar tikrai norite pašalinti rezervaciją?"}
+          {"Ar tikrai norite pašalinta rezervaciją?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Rezervacija bus pašalintas visam laikui
+            Rezervacija bus pašalinti visam laikui
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Atšaukti</Button>
-          <Button onClick={handleClose} autoFocus>
-            Pašalinti
-          </Button>
+          <Button onClick={confirmDelete} autoFocus>Pašalinti</Button>
         </DialogActions>
       </Dialog>
       <TableContainer component={Paper}>
@@ -91,19 +119,20 @@ export default function Rezervations() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {reservations.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.start}
+                  {format(new Date(row.start), 'yyyy-MM-dd')}
+
                 </TableCell>
-                <TableCell>{row.end}</TableCell>
+                <TableCell>{format(new Date(row.end), 'yyyy-MM-dd')}</TableCell>
                 <TableCell>{row.type}</TableCell>
                 <TableCell>{row.bedAmount}</TableCell>
-                <TableCell>{row.breakfast}</TableCell>
-                <TableCell>{row.price}</TableCell>
+                <TableCell>{row.breakfast? "Užsakyta": ""}</TableCell>
+                <TableCell>{row.price.toFixed(2)}</TableCell>
                 {Date.parse(row.start) > new Date() ? (
                   <TableCell>Rezervacija neprasidėjusi</TableCell>
                 ) : Date.parse(row.end) > new Date() ? (
@@ -114,12 +143,12 @@ export default function Rezervations() {
                 {Date.parse(row.start) > new Date() ? (
                   <div>
                   <TableCell>
-                    <RemoveButton action={handleClickOpen} />
+                    <RemoveButton action={()=>handleClickOpen(row.id)} />
                   </TableCell>
                   <TableCell>
                     <EditButton
                       action={() => {
-                        history.push("/klientas/edit/69");
+                        history.push("/klientas/editreservation/"+row.id);
                       }}
                     />
                   </TableCell>
@@ -128,7 +157,7 @@ export default function Rezervations() {
                     <TableCell>
                     <AddFoodButton
                       action={() => {
-                        history.push("/klientas/addfood/69");
+                        history.push("/klientas/foodorders/"+row.id);
                       }}
                     />
                   </TableCell>
@@ -143,7 +172,7 @@ export default function Rezervations() {
       <br />
       <AddButton
         action={() => {
-          history.push("/klientas/add");
+          history.push("/klientas/addreservation");
         }}
         name={"Kurti revervaciją"}
       />

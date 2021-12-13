@@ -91,6 +91,7 @@ module.exports = {
       {
           console.log(err);
           res.status(400).send({ message:"Nepavyko pašalinti darbuotojo"})
+          return
       }
       res.send({ message:"Darbuotojas pašalintas" })
     })

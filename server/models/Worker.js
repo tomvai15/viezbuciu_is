@@ -46,8 +46,21 @@ module.exports = {
     getRoomData: function(con, start, end, callback) 
     {
       con.query(
-        `SELECT DATE_FORMAT(rezervacijos.pradzia,\'%Y-%m-%d\')  as date, SUM(kambariai.kaina) as income,SUM(kambariai.islaikymo_islaidos) as costs  FROM rezervacijos LEFT JOIN kambariai ON rezervacijos.fk_Kambarys=kambariai.id_Kambarys  WHERE rezervacijos.pradzia<'${end}' AND rezervacijos.pradzia>'${start}' GROUP BY (rezervacijos.pradzia)`,
+        `SELECT DATE_FORMAT(rezervacijos.pradzia,\'%Y-%m-%d\')  as date, SUM(kambariai.kaina) as income,SUM(kambariai.islaikymo_islaidos) as costs  FROM rezervacijos LEFT JOIN kambariai ON rezervacijos.fk_Kambarys=kambariai.id_Kambarys  WHERE rezervacijos.pradzia<='${end}' AND rezervacijos.pradzia>='${start}' GROUP BY (rezervacijos.pradzia)`,
          callback)
 
+    },
+    getFoodData: function(con, start, end, callback) 
+    {
+      con.query(
+        `SELECT DATE_FORMAT(maisto_uzsakymai.laikas,\'%Y-%m-%d\')  as date, SUM(meniu_irasai.kaina*maisto_uzsakymai.kiekis) as income,   SUM(meniu_irasai.savikaina*maisto_uzsakymai.kiekis) as costs from maisto_uzsakymai LEFT JOIN meniu_irasai ON maisto_uzsakymai.fk_Meniu_irasas=meniu_irasai.id_Meniu_irasas WHERE maisto_uzsakymai.laikas<='${end}' AND maisto_uzsakymai.laikas>='${start}' GROUP BY (maisto_uzsakymai.laikas)`,
+         callback)
+    },
+    getReportDat: function(con, start, end, callback) 
+    {
+      console.log("? " +start+ " "+  end)
+      con.query(
+        `SELECT c.date, SUM(c.income) as income, SUM(c.costs) as costs FROM (SELECT a.date, a.income,a.costs FROM (SELECT DATE_FORMAT(rezervacijos.pradzia,'%Y-%m-%d')  as date, SUM(kambariai.kaina) as income,SUM(kambariai.islaikymo_islaidos) as costs  FROM rezervacijos LEFT JOIN kambariai ON rezervacijos.fk_Kambarys=kambariai.id_Kambarys GROUP BY (rezervacijos.pradzia)) a UNION SELECT b.date, b.income,b.costs FROM (SELECT DATE_FORMAT(maisto_uzsakymai.pristatymo_data,'%Y-%m-%d')  as date, SUM(meniu_irasai.kaina*maisto_uzsakymai.kiekis) as income,   SUM(meniu_irasai.savikaina*maisto_uzsakymai.kiekis) as costs from maisto_uzsakymai LEFT JOIN meniu_irasai ON maisto_uzsakymai.fk_Meniu_irasas=meniu_irasai.id_Meniu_irasas GROUP BY (maisto_uzsakymai.pristatymo_data)) b) c WHERE c.date<='${end}' AND c.date>='${start}' GROUP BY (c.date)`,
+         callback)
     },
 }

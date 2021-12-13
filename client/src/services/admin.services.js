@@ -32,8 +32,8 @@ class AdminService {
           },
           responseType: 'arraybuffer',
           params:{
-              start:start.getFullYear()+"-"+(start.getMonth()+1)+"-"+(start.getDate()+1),
-              end:end.getFullYear()+"-"+(end.getMonth()+1)+"-"+(end.getDate()+1)
+              start:start,
+              end:end
             }
         })
     }

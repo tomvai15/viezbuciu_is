@@ -39,28 +39,42 @@ async function generatePDF(data) {
 module.exports = {
   getReport: async function(req, res) {
     console.log(req.query)
-    Worker.getRoomData(req.con, req.query.start, req.query.end, async function(err, rows) 
+    Worker.getReportDat(req.con, req.query.start, req.query.end, async function(err, rows) 
     {
       if (err)
       {
           res.status(400).send({message:"failed"})
           return 
       }
+      console.log(rows)
       const result =rows.map((r) => {return {date:r.date, income:r.income, costs:r.costs, profit: r.income-r.costs}})
       await generatePDF(result);
       res.download('./pdf/test.pdf');
     })
   },
   getReportData: async function(req, res) {
-    Worker.getRoomData(req.con, req.body.start, req.body.end, function(err, rows) 
+    Worker.getReportDat(req.con, req.body.start, req.body.end, function(err, rows) 
     {
       if (err)
       {
           res.status(400).send({message:"failed"})
           return 
       }
-      const result =rows.map((r) => {return {date:r.date, income:r.income, costs:r.costs, profit: r.income-r.costs}})
-      res.send({data:result})
+      console.log(rows)
+      const result1 =rows.map((r) => {return {date:r.date, income:r.income, costs:r.costs, profit: r.income-r.costs}})
+      res.send({data:result1})
+      /*
+      Worker.getFoodData(req.con, req.body.start, req.body.end, function(err, rows) 
+      {
+        if (err)
+        {
+            res.status(400).send({message:"failed"})
+            return 
+        }
+        const result2 =rows.map((r) => {return {date:r.date, income:r.income, costs:r.costs, profit: r.income-r.costs}})
+        const result = [...result1, ...result2]
+        res.send({data:result})
+      })*/
   })},
 
 }

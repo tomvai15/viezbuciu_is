@@ -58,7 +58,7 @@ const Report = () => {
     };
     async function  downloadPDF () 
     {
-      const { data } = await adminServices.getReportPdf(from,to)
+      const { data } = await adminServices.getReportPdf(from-1,to)
       console.log(data)
       const blob = new Blob([data], { type: 'application/pdf' })
       saveAs(blob, "ataskaita.pdf")
@@ -66,7 +66,7 @@ const Report = () => {
 
   function downloadData(start, end)
   {
-    adminServices.getReportData(start,end).then((res)=>{
+    adminServices.getReportData(start-1,end).then((res)=>{
       const reportData = res.data.data;
       setData(reportData);
     },

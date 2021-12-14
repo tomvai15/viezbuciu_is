@@ -143,4 +143,14 @@ module.exports = {
       res.send({ data: rows });
     });
   },
+
+  getRoomUsageCount: function (req, res) {
+    Room.getRoomUsageCount(req.con, req.params.room, function (err, rows) {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ message: "FAILED" });
+      }
+      res.send({ data: rows });
+    });
+  },
 };

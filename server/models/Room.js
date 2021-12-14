@@ -14,8 +14,19 @@ module.exports = {
   },
 
   getAll: function (con, callback) {
+    console.log()
     con.query(
-      `SELECT *, kambario_tipai.name as f_tipas, vaizdo_tipai.name as f_vaizdas FROM kambariai LEFT JOIN kambario_tipai ON id_Kambario_tipas = kambario_tipas
+      `SELECT *, 
+    (
+    SELECT
+        COUNT(*)
+    FROM
+        rezervacijos AS R
+    INNER JOIN kambariai ON K.id_Kambarys = R.fk_Kambarys
+    WHERE
+        K.id_kambarys = K.id_Kambarys AND R.pradzia <= '2021-12-14' AND R.pabaiga >= '2021-12-14'
+) AS count,
+kambario_tipai.name as f_tipas, vaizdo_tipai.name as f_vaizdas FROM kambariai as K LEFT JOIN kambario_tipai ON id_Kambario_tipas = kambario_tipas
     LEFT JOIN vaizdo_tipai ON id_Vaizdo_tipas = vaizdas`,
       callback
     );
@@ -103,20 +114,37 @@ module.exports = {
   },
 
   getReservations: function (con, callback) {
-    con.query(`SELECT rezervacijos.*, (ifnull(kambariai.kaina,0)+ifnull(maistoKaina,0)) as kaina, kambario_tipai.name, kambariai.numeris, kambariai.id_Kambarys   FROM rezervacijos 
+    con.query(
+      `SELECT rezervacijos.*, (ifnull(kambariai.kaina,0)+ifnull(maistoKaina,0)) as kaina, kambario_tipai.name, kambariai.numeris, kambariai.id_Kambarys   FROM rezervacijos 
       left join kambariai on fk_Kambarys = id_Kambarys 
       left join (select sum(maisto_uzsakymai.kiekis * meniu_irasai.kaina) as maistoKaina, maisto_uzsakymai.fk_Rezervacija from maisto_uzsakymai
                   INNER join meniu_irasai on meniu_irasai.id_Meniu_irasas = maisto_uzsakymai.fk_Meniu_irasas group by maisto_uzsakymai.fk_Rezervacija) b
       on b.fk_Rezervacija = rezervacijos.id_Rezervacija
-      inner join kambario_tipai on rezervacijos.kambario_tipas = kambario_tipai.id_Kambario_tipas`, callback);
+      inner join kambario_tipai on rezervacijos.kambario_tipas = kambario_tipai.id_Kambario_tipas`,
+      callback
+    );
   },
 
   getRoomsForAssign: function (con, type, beds, callback) {
     // console.log(`SELECT * FROM kambariai WHERE lovu_skaicius='${beds}' AND kambario_tipas='${type}'`)
-    con.query(`SELECT * FROM kambariai 
+    con.query(
+      `SELECT * FROM kambariai 
     INNER JOIN vaizdo_tipai on vaizdo_tipai.id_Vaizdo_tipas = kambariai.vaizdas
-    WHERE lovu_skaicius='${beds}' AND kambario_tipas='${type}'`, callback);
+    WHERE lovu_skaicius='${beds}' AND kambario_tipas='${type}'`,
+      callback
+    );
   },
 
-};
+  getRoomUsageCount: function (con, room, callback) {
+    // console.log( `SELECT count(*) as count  FROM rezervacijos
+    // INNER JOIN kambariai ON kambariai.id_Kambarys = rezervacijos.fk_Kambarys
+    // WHERE kambariai.id_kambarys = ${room} AND rezervacijos.pradzia <= '${getCurrentDate()}' AND rezervacijos.pabaiga >= '${getCurrentDate()}'`)
 
+    con.query(
+      `SELECT count(*) as count  FROM rezervacijos
+INNER JOIN kambariai ON kambariai.id_Kambarys = rezervacijos.fk_Kambarys
+WHERE kambariai.id_kambarys = ${room} AND rezervacijos.pradzia <= '${getCurrentDate()}' AND rezervacijos.pabaiga >= '${getCurrentDate()}'`,
+      callback
+    );
+  },
+};

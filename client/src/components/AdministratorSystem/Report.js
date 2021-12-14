@@ -27,40 +27,19 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import DateTimePicker from '@mui/lab/DateTimePicker';
-
+import MyDocument from './pdfReport';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
-
+import ReactPDF from '@react-pdf/renderer';
+import { useEffect } from 'react';
+import { saveAs } from 'file-saver'
+import adminServices from '../../services/admin.services';
 
 function createData(id, date, income, costs) {
     const profit=(income-costs)
     return { id, date, income, costs, profit };
   }
 const datastart = [
-    createData(
-      0,
-      '2021-09-01',
-      350,
-      200,
-    ),
-    createData(
-      1,
-      '2021-09-02',
-      100,
-      300,
-    ),
-    createData(2, '2021-09-03', 300, 150),
-    createData(
-      3,
-      '2021-09-04',
-      500,
-      400,
-    ),
-    createData(
-      4,
-      '2021-09-05',
-      100,
-      111,
-    ),
+   
   ];
 
 const mdTheme = createTheme();
@@ -68,15 +47,43 @@ const mdTheme = createTheme();
 const Report = () => {
     const [data, setData] = React.useState(datastart);
     const [from, setFrom] = React.useState(new Date('2021-09-01'));
-    const [to, setTo] = React.useState(new Date('2021-12-14'));
+    const [to, setTo] = React.useState(new Date('2021-12-30'));
     const handleChangeFrom = (newValue) => {
         setFrom(newValue);
-        console.log(from.toISOString().substring(0, 10))
-
+        downloadData(newValue,to);
       };
     const handleChangeTo = (newValue) => {
         setTo(newValue);
+        downloadData(from,newValue);
     };
+    async function  downloadPDF () 
+    {
+      const { data } = await adminServices.getReportPdf(from-1,to)
+      console.log(data)
+      const blob = new Blob([data], { type: 'application/pdf' })
+      saveAs(blob, "ataskaita.pdf")
+    };
+
+  function downloadData(start, end)
+  {
+    adminServices.getReportData(start-1,end).then((res)=>{
+      const reportData = res.data.data;
+      setData(reportData);
+    },
+    error => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      console.log(resMessage);
+    });
+  }
+  useEffect(() => {
+    downloadData(from,to);
+  },[])
+
     return (
             <Box>
             <Typography variant="h5">
@@ -119,7 +126,7 @@ const Report = () => {
                       height: 400,
                     }}
                   >
-                    <ReportChart  data={data.filter((d) => d.date>from.toISOString().substring(0, 10) && d.date<to.toISOString().substring(0, 10) )}/>
+                    <ReportChart  data={data}/>
                   </Paper>
                 </Grid>   
               </Grid>
@@ -128,7 +135,7 @@ const Report = () => {
             variant="contained"
             color="primary"
             startIcon={<PictureAsPdfIcon/>}
-          
+            onClick={downloadPDF}
             >
             Atsisiųsti ataskaitos PDF
             </Button>

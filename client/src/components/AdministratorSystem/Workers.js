@@ -74,10 +74,11 @@ export default function Workers() {
   const [selectedId, setSelectedId] = React.useState(-1);
   const [open, setOpen] = React.useState(false);
   const [workers, setWorkers] = React.useState([]);
+  const [workplace, setWorkplace] = React.useState(0);
   
-
-  useEffect(() => {
-    adminService.getWorkers().then((res)=>{
+  function downloadData(place)
+  {
+    adminService.getWorkers(place).then((res)=>{
       const workers = res.data.data;
       console.log(workers);
       setWorkers(workers.map(worker=> createData(worker.vardas,worker.pavarde,worker.darbo_vieta=="r_darbuotojas" ? "Registratūra" : "Virtuvė",worker.el_pastas,worker.telefono_numeris,worker.gimimo_data.substring(0,10),worker.idarbinimo_data.substring(0,10),worker.atlyginimas,worker.asmens_kodas,worker.darbo_sutartis,worker.id)));
@@ -91,7 +92,16 @@ export default function Workers() {
         error.toString();
       console.log(resMessage);
     });
+  }
+  useEffect(() => {
+    downloadData(0);
   },[])
+
+  const handleWorkplaceChange=(event) => {
+    const w  = event.target.value;
+    setWorkplace(w);
+    downloadData(w);
+  };
 
   const handleClickOpen = (id) => {
     console.log(id)
@@ -124,7 +134,7 @@ export default function Workers() {
       <Typography variant="h7">
           Darbuotojų filtras:   
       </Typography>
-       <Select id="dv" value={0}>
+       <Select id="dv" value={workplace} onChange={handleWorkplaceChange}>
           <MenuItem value={0}>Visi darbuotojai</MenuItem>
           <MenuItem value={1}>Virtuvės darbuotojai</MenuItem>
           <MenuItem value={2}>Registratūros darbuotojai</MenuItem>

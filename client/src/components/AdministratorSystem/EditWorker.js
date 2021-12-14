@@ -48,27 +48,37 @@ const EditWorker = () => {
   
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    if (!/^([0-9]{11}$)/.test(worker.personCode))
+    {
+      setResponse({type: 0,message:""})
+    }
+    else if (!/^\+370([0-9]{8}$)/.test(worker.phone))
+    {
+      setResponse({type: 0,message:""})
+    }
+    else{
+      const data = new FormData(event.currentTarget);
 
-    let w = {...worker}
+      let w = {...worker}
 
-    w.birthDate=worker.birthDate.getFullYear()+"-"+(worker.birthDate.getMonth()+1)+"-"+worker.birthDate.getDate()
-    w.startDate=worker.startDate.getFullYear()+"-"+(worker.startDate.getMonth()+1)+"-"+worker.startDate.getDate()
+      w.birthDate=worker.birthDate.getFullYear()+"-"+(worker.birthDate.getMonth()+1)+"-"+(worker.birthDate.getDate()+1)
+      w.startDate=worker.startDate.getFullYear()+"-"+(worker.startDate.getMonth()+1)+"-"+(worker.startDate.getDate()+1)
 
-    adminService.updateWorker(w).then((res)=>{
-      console.log("OK")
-      setResponse({type: 0,message:"Darbuotojo informacija išsaugota"})
-    },
-    error => {
-      const resMessage =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      console.log(resMessage);
-      setResponse({type: 1,message:resMessage })
-    });
+      adminService.updateWorker(w).then((res)=>{
+        console.log("OK")
+        setResponse({type: 0,message:"Darbuotojo informacija išsaugota"})
+      },
+      error => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(resMessage);
+        setResponse({type: 1,message:resMessage })
+      });
+    }
 
     
   };
@@ -128,6 +138,8 @@ const EditWorker = () => {
           label="Telefono num."
           name="phone"
           value={worker.phone}
+          error={!/^\+370([0-9]{8}$)/.test(worker.phone)}
+          helperText={/^\+370([0-9]{8}$)/.test(worker.phone) == false ? "Telefono numerio formatas +370xxxxxxxx": ""}
           onChange={(event)=>setWorker({...worker,phone:event.target.value})}
      
         />
@@ -170,6 +182,9 @@ const EditWorker = () => {
           id="personcode"
           label="Asmens kodas"
           name="personcode"
+          type="number"
+          error={!/^([0-9]{11}$)/.test(worker.personCode) && worker.personCod!=''}
+          helperText={/^([0-9]{11}$)/.test(worker.personCode) == false ? "Asmens kodą turi sudaryti 11 skaitmenų": ""}
           value={worker.personCode}
           onChange={(event)=>setWorker({...worker,personCode:event.target.value})}    
      

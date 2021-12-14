@@ -19,7 +19,7 @@ module.exports = {
       const user = rows.find(element => element.el_pastas == req.body.email)
       if (user) 
       {
-        res.status(400).send({message: "Failed! Email is already in use!"});
+        res.status(400).send({message: "Nurodytas el.paštas jau naudojamas"});
         return;
       }
       User.createClient(req.con,{

@@ -19,6 +19,7 @@ router.post("/assignroom",[authJwt.verifyToken,authJwt.isReception],roomsControl
 router.get("/roomswithreservation",[authJwt.verifyToken,authJwt.isReception],roomsController.getRoomsWithReservation) 
 router.get("/getreservations",[authJwt.verifyToken,authJwt.isReception],roomsController.getReservations) 
 router.get("/getroomsforassign/:type/:beds",[authJwt.verifyToken,authJwt.isReception],roomsController.getRoomsForAssign) 
+router.get("/getroomusagecount/:room",[authJwt.verifyToken,authJwt.isReception],roomsController.getRoomUsageCount) 
 
 
 

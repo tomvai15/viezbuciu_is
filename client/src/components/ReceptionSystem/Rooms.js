@@ -103,7 +103,7 @@ export default function Rooms() {
         setRooms(
           rooms.map((room) =>
             createData(
-              true,
+              room.count == 0? true : false,
               room.numeris,
               room.aukstas,
               room.lovu_skaicius,
